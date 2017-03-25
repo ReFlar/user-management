@@ -21,6 +21,7 @@ use Flarum\Core\Discussion;
 use Flarum\Core\Repository\PostRepository;
 use Flarum\Core\Repository\UserRepository;
 use Flarum\Core\Support\DispatchEventsTrait;
+use Flarum\Core\User;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Reflar\UserManagement\Repository\StrikeRepository;

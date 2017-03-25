@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Reflar\RegistrationTweak\Commands;
+namespace Reflar\UserManagement\Commands;;
 
 use Exception;
 use Flarum\Core\Access\AssertPermissionTrait;

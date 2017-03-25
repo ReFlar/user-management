@@ -2,7 +2,7 @@ import app from 'flarum/app';
 import Page from 'flarum/components/Page';
 import Button from 'flarum/components/Button';
 import LoadingIndicator from 'flarum/components/LoadingIndicator';
-import MemberSettingsModal from 'Reflar/MemberManagement/components/MemberSettingsModal'
+import MemberSettingsModal from 'Reflar/UserManagement/components/MemberSettingsModal'
 import humanTime from 'flarum/helpers/humanTime';
 import icon from 'flarum/helpers/icon';
 
@@ -10,9 +10,7 @@ import icon from 'flarum/helpers/icon';
 function MemberItem(user) {
     const url = app.forum.attribute('baseUrl') + '/u/' + user.id();
     const online = user.isOnline();
-    const activated = user.isActivated();
-
-    if (activated == 1) {
+    let activated = user.isActivated();
     
       return [
           m('li', {"data-id": user.id()}, [
@@ -20,11 +18,30 @@ function MemberItem(user) {
                   m('span', {className: 'MemberListItem-name'}, [
                       user.username(),
                   ]),
-                  m('span', {className: 'MemberCard-lastSeen' + (online ? ' online' : '')}, [
-                      online
-                          ? [icon('circle'), ' ', className='MemberCard-online', app.translator.trans('Reflar-registration.admin.page.online_text')]
-                          : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]
-                  ]),
+                  m('div', {className: 'MemberListItem-info' + (activated ? '1' : '0')}, [
+                      activated
+                          ? [m('span', {className: 'MemberCard-lastSeen' + (online ? ' online' : '')}, [
+                                online 
+                                    ? [icon('circle'), ' ', {className: 'MemberCard-online'}, app.translator.trans('Reflar-registration.admin.page.online_text')]
+                                    : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]
+                            ])]
+                          : [m('span', {className: 'MemberCard-lastSeen'}, [
+                                m('a', {
+                                  className: 'Button Button--link',
+                                  onclick: function onclick() {
+                                     app.request({
+                                          url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/activate',
+                                          method: 'POST',
+                                          data: {username: user.username()}
+                                     }).then(function () {
+                                          return window.location.reload();
+                                        });
+                                  }
+                              }, [
+                                  "Activate"
+                              ])
+                            ])]
+                    ]),
                   m('span', {className: 'MemberListItem-comments'}, [
                       icon('comment-o'),
                       user.commentsCount()
@@ -43,27 +60,6 @@ function MemberItem(user) {
               ])
           ])
       ];
-   } else {
-     return [
-          m('li', {"data-id": user.id()}, [
-              m('div', {className: 'MembersListItem-info'}, [
-                  m('span', {className: 'MemberListItem-name'}, [
-                      user.username(),
-                  ]),
-                  m('span', {className: 'MemberCard-lastSeen'}, [
-                      user.email(),
-                  ]),
-                  m('a', {
-                      className: 'Button Button--link',
-                      target: '_blank',
-                      href: url
-                  }, [
-                      icon('eye')
-                  ])
-              ])
-          ])
-      ];
-   }
 }
 
 export default class MemberPage extends Page {
@@ -105,7 +101,7 @@ export default class MemberPage extends Page {
                 m('div', {className: 'MemberList-list'}, [
                     m('div', {className: 'container'}, [
                         m('div', {className: 'MemberListItems'}, [
-                            m('label', {}, app.translator.trans('Reflar-registration.admin.page.list_title')),
+                            m('label', {className: 'MemberListLabel'}, app.translator.trans('Reflar-registration.admin.page.list_title')),
                             m('ol', {
                                     className: 'MemberList'
                                 },

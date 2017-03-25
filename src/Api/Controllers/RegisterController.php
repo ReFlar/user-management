@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Reflar\UserManagement\Api\Commands;
+namespace Reflar\UserManagement\Api\Controllers;
 
 use Flarum\Api\Client;
 use Flarum\Http\Controller\ControllerInterface;

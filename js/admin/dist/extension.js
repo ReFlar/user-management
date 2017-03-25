@@ -39,7 +39,7 @@ System.register('Reflar/UserManagement/addMembersListPane', ['flarum/app', 'flar
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'flarum/components/Page', 'flarum/components/Button', 'flarum/components/LoadingIndicator', 'Reflar/MemberManagement/components/MemberSettingsModal', 'flarum/helpers/humanTime', 'flarum/helpers/icon'], function (_export, _context) {
+System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'flarum/components/Page', 'flarum/components/Button', 'flarum/components/LoadingIndicator', 'Reflar/UserManagement/components/MemberSettingsModal', 'flarum/helpers/humanTime', 'flarum/helpers/icon'], function (_export, _context) {
     "use strict";
 
     var app, Page, Button, LoadingIndicator, MemberSettingsModal, humanTime, icon, MemberPage;
@@ -50,20 +50,22 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
         var online = user.isOnline();
         var activated = user.isActivated();
 
-        if (activated == 1) {
-
-            return [m('li', { "data-id": user.id() }, [m('div', { className: 'MemberListItem-info' }, [m('span', { className: 'MemberListItem-name' }, [user.username()]), m('span', { className: 'MemberCard-lastSeen' + (online ? ' online' : '') }, [online ? [icon('circle'), ' ', className = 'MemberCard-online', app.translator.trans('Reflar-registration.admin.page.online_text')] : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), m('a', {
-                className: 'Button Button--link',
-                target: '_blank',
-                href: url
-            }, [icon('eye')])])])];
-        } else {
-            return [m('li', { "data-id": user.id() }, [m('div', { className: 'MembersListItem-info' }, [m('span', { className: 'MemberListItem-name' }, [user.username()]), m('span', { className: 'MemberCard-lastSeen' }, [user.email()]), m('a', {
-                className: 'Button Button--link',
-                target: '_blank',
-                href: url
-            }, [icon('eye')])])])];
-        }
+        return [m('li', { "data-id": user.id() }, [m('div', { className: 'MemberListItem-info' }, [m('span', { className: 'MemberListItem-name' }, [user.username()]), m('div', { className: 'MemberListItem-info' + (activated ? '1' : '0') }, [activated ? [m('span', { className: 'MemberCard-lastSeen' + (online ? ' online' : '') }, [online ? [icon('circle'), ' ', { className: 'MemberCard-online' }, app.translator.trans('Reflar-registration.admin.page.online_text')] : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]])] : [m('span', { className: 'MemberCard-lastSeen' }, [m('a', {
+            className: 'Button Button--link',
+            onclick: function onclick() {
+                app.request({
+                    url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/activate',
+                    method: 'POST',
+                    data: { username: user.username() }
+                }).then(function () {
+                    return window.location.reload();
+                });
+            }
+        }, ["Activate"])])]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), m('a', {
+            className: 'Button Button--link',
+            target: '_blank',
+            href: url
+        }, [icon('eye')])])])];
     }
 
     return {
@@ -75,8 +77,8 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
             Button = _flarumComponentsButton.default;
         }, function (_flarumComponentsLoadingIndicator) {
             LoadingIndicator = _flarumComponentsLoadingIndicator.default;
-        }, function (_ReflarMemberManagementComponentsMemberSettingsModal) {
-            MemberSettingsModal = _ReflarMemberManagementComponentsMemberSettingsModal.default;
+        }, function (_ReflarUserManagementComponentsMemberSettingsModal) {
+            MemberSettingsModal = _ReflarUserManagementComponentsMemberSettingsModal.default;
         }, function (_flarumHelpersHumanTime) {
             humanTime = _flarumHelpersHumanTime.default;
         }, function (_flarumHelpersIcon) {
@@ -123,7 +125,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                             onclick: function onclick() {
                                 return app.modal.show(new MemberSettingsModal());
                             }
-                        })])]), m('div', { className: 'MemberList-list' }, [m('div', { className: 'container' }, [m('div', { className: 'MemberListItems' }, [m('label', {}, app.translator.trans('Reflar-registration.admin.page.list_title')), m('ol', {
+                        })])]), m('div', { className: 'MemberList-list' }, [m('div', { className: 'container' }, [m('div', { className: 'MemberListItems' }, [m('label', { className: 'MemberListLabel' }, app.translator.trans('Reflar-registration.admin.page.list_title')), m('ol', {
                             className: 'MemberList'
                         }, [this.users.map(MemberItem)]), m('div', { className: 'MemberList-loadMore' }, [loading])])])])])];
                     }
@@ -191,7 +193,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
 System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum/app', 'flarum/components/SettingsModal', 'flarum/components/Switch'], function (_export, _context) {
   "use strict";
 
-  var app, SettingsModal, Switch, MembersSettingsModal;
+  var app, SettingsModal, Switch, MemberSettingsModal;
   return {
     setters: [function (_flarumApp) {
       app = _flarumApp.default;
@@ -201,15 +203,15 @@ System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum
       Switch = _flarumComponentsSwitch.default;
     }],
     execute: function () {
-      MembersSettingsModal = function (_SettingsModal) {
-        babelHelpers.inherits(MembersSettingsModal, _SettingsModal);
+      MemberSettingsModal = function (_SettingsModal) {
+        babelHelpers.inherits(MemberSettingsModal, _SettingsModal);
 
-        function MembersSettingsModal() {
-          babelHelpers.classCallCheck(this, MembersSettingsModal);
-          return babelHelpers.possibleConstructorReturn(this, (MembersSettingsModal.__proto__ || Object.getPrototypeOf(MembersSettingsModal)).apply(this, arguments));
+        function MemberSettingsModal() {
+          babelHelpers.classCallCheck(this, MemberSettingsModal);
+          return babelHelpers.possibleConstructorReturn(this, (MemberSettingsModal.__proto__ || Object.getPrototypeOf(MemberSettingsModal)).apply(this, arguments));
         }
 
-        babelHelpers.createClass(MembersSettingsModal, [{
+        babelHelpers.createClass(MemberSettingsModal, [{
           key: 'className',
           value: function className() {
             return 'SettingsModal Modal--small';
@@ -243,10 +245,10 @@ System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum
             )];
           }
         }]);
-        return MembersSettingsModal;
+        return MemberSettingsModal;
       }(SettingsModal);
 
-      _export('default', MembersSettingsModal);
+      _export('default', MemberSettingsModal);
     }
   };
 });;
@@ -276,8 +278,13 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'R
         extend(PermissionGrid.prototype, 'moderateItems', function (items) {
           items.add('activate', {
             icon: 'address-card-o',
-            label: app.translator.trans('Reflar-registration.admin.perm_item'),
+            label: app.translator.trans('Reflar-registration.admin.activate_perm_item'),
             permission: 'user.activate'
+          });
+          items.add('strike', {
+            icon: 'address-card-o',
+            label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
+            permission: 'user.strike'
           });
         });
       });

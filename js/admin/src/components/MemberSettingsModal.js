@@ -2,7 +2,7 @@ import app from 'flarum/app';
 import SettingsModal from 'flarum/components/SettingsModal';
 import Switch from 'flarum/components/Switch';
 
-export default class MembersSettingsModal extends SettingsModal {
+export default class MemberSettingsModal extends SettingsModal {
   className() {
     return 'SettingsModal Modal--small';
   }

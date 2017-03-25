@@ -15,9 +15,11 @@ namespace Reflar\UserManagement\Listeners;
 use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Event\ConfigureLocales;
+use Flarum\Event\ConfigureApiRoutes;
 use Flarum\Event\PrepareApiAttributes;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
+use Reflar\UserManagement\Api\Controllers\ActivateController;
 use Reflar\UserManagement\Api\Controllers\RegisterController;
 use Reflar\UserManagement\Api\Controllers\StrikeController;
 
@@ -40,6 +42,7 @@ class AddApiAttributes
       */
     public function subscribe(Dispatcher $events)
     {
+        $events->listen(ConfigureApiRoutes::class, [$this, 'configureApiRoutes']);
         $events->listen(PrepareApiAttributes::class, [$this, 'addAttributes']);
     }
     
@@ -48,8 +51,9 @@ class AddApiAttributes
      */
     public function configureApiRoutes(ConfigureApiRoutes $event)
     {
-        $event->post('/reflar/UserManagement/register', 'reflar.registration.register', RegisterController::class);
-        $event->post('/reflar/UserManagement/strike', 'reflar.registration.strike', StrikeController::class); 
+        $event->post('/reflar/usermanagement/register', 'reflar.usermanagement.register', RegisterController::class);
+        $event->post('/reflar/usermanagement/strike', 'reflar.usermanagement.strike', StrikeController::class); 
+        $event->post('/reflar/usermanagement/activate', 'reflar.usermanagement.activate', ActivateController::class);
     }
 
      /**
