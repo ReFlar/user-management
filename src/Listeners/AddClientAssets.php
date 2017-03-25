@@ -32,6 +32,12 @@ class AddClientAssets
               ]);
             $event->addBootstrapper('Reflar/UserManagement/main');
         }
+        if ($event->isForum()) {
+              $event->addAssets([
+                  __DIR__.'/../../js/forum/dist/extension.js'
+              ]);
+              $event->addBootstrapper('Reflar/UserManagement/main');
+          }
     }
   
    public function configLocales(ConfigureLocales $event)

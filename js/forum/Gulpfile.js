@@ -2,7 +2,7 @@ var gulp = require('flarum-gulp');
 
 gulp({
     modules: {
-        'Reflar/registration': [
+        'Reflar/UserManagement': [
             'src/**/*.js'
         ]
     }

@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Reflar\UserManagement\Validator;
+namespace Reflar\UserManagement\Validators;
 
 use Flarum\Core\User;
 
@@ -54,6 +54,12 @@ class UserValidator extends AbstractValidator
               'password' => [
                   'required',
                   'min:8'
+              ],
+              'age' => [
+                  'int'
+              ],
+              'gender' => [
+                   'string'
               ]
           ];
       
@@ -74,6 +80,12 @@ class UserValidator extends AbstractValidator
               'password' => [
                   'required',
                   'min:8'
+              ],
+              'age' => [
+                  'int'
+              ],
+              'gender' => [
+                   'string'
               ]
           ];
        }

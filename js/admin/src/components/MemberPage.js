@@ -22,7 +22,7 @@ function MemberItem(user) {
                       activated
                           ? [m('span', {className: 'MemberCard-lastSeen' + (online ? ' online' : '')}, [
                                 online 
-                                    ? [icon('circle'), ' ', {className: 'MemberCard-online'}, app.translator.trans('Reflar-registration.admin.page.online_text')]
+                                    ? [icon('circle'), ' ', {className: 'MemberCard-online'}, app.translator.trans('reflar-usermanagement.admin.page.online_text')]
                                     : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]
                             ])]
                           : [m('span', {className: 'MemberCard-lastSeen'}, [
@@ -79,7 +79,7 @@ export default class MemberPage extends Page {
             loading = LoadingIndicator.component();
         } else if (this.moreResults) {
             loading = Button.component({
-                children: app.translator.trans('Reflar-registration.admin.page.load_more_button'),
+                children: app.translator.trans('reflar-usermanagement.admin.page.load_more_button'),
                 className: 'Button',
                 onclick: this.loadMore.bind(this)
             });
@@ -89,11 +89,11 @@ export default class MemberPage extends Page {
             m('div', {className: 'MemberListPage'}, [
                 m('div', {className: 'MemberList-header'}, [
                     m('div', {className: 'container'}, [
-                        m('p', {}, app.translator.trans('Reflar-registration.admin.page.about_text')),
+                        m('p', {}, app.translator.trans('reflar-usermanagement.admin.page.about_text')),
                         Button.component({
                             className: 'Button Button--primary',
                             icon: 'plus',
-                            children: app.translator.trans('Reflar-registration.admin.page.settings'),
+                            children: app.translator.trans('reflar-usermanagement.admin.page.settings'),
                             onclick: () => app.modal.show(new MemberSettingsModal())
                         })
                     ])
@@ -101,7 +101,7 @@ export default class MemberPage extends Page {
                 m('div', {className: 'MemberList-list'}, [
                     m('div', {className: 'container'}, [
                         m('div', {className: 'MemberListItems'}, [
-                            m('label', {className: 'MemberListLabel'}, app.translator.trans('Reflar-registration.admin.page.list_title')),
+                            m('label', {className: 'MemberListLabel'}, app.translator.trans('reflar-usermanagement.admin.page.list_title')),
                             m('ol', {
                                     className: 'MemberList'
                                 },

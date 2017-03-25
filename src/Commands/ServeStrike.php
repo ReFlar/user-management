@@ -14,10 +14,10 @@ namespace Reflar\UserManagement\Commands;
 
 use Flarum\Core\User;
 
-class Strike
+class ServeStrike
 {  
     /**.
-     * @var int
+     * @var integer
      */
     public $post_id;
 
@@ -32,9 +32,9 @@ class Strike
     public $actor;
 
     /**
-     * @param int    $post_id
-     * @param int    $reason
-     * @param User   $actor
+     * @param integer  $post_id
+     * @param string   $reason
+     * @param User     $actor
      */
     public function __construct($post_id, $reason, User $actor)
     {

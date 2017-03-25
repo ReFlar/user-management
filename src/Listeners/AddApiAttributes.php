@@ -12,6 +12,7 @@
 
 namespace Reflar\UserManagement\Listeners;
 
+use Flarum\Api\Serializer\DiscussionSerializer;
 use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Event\ConfigureLocales;
@@ -21,7 +22,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Reflar\UserManagement\Api\Controllers\ActivateController;
 use Reflar\UserManagement\Api\Controllers\RegisterController;
-use Reflar\UserManagement\Api\Controllers\StrikeController;
+use Reflar\UserManagement\Api\Controllers\ServeStrikeController;
 
 class AddApiAttributes
 {
@@ -52,7 +53,7 @@ class AddApiAttributes
     public function configureApiRoutes(ConfigureApiRoutes $event)
     {
         $event->post('/reflar/usermanagement/register', 'reflar.usermanagement.register', RegisterController::class);
-        $event->post('/reflar/usermanagement/strike', 'reflar.usermanagement.strike', StrikeController::class); 
+        $event->post('/reflar/usermanagement/strike', 'reflar.usermanagement.strike', ServeStrikeController::class); 
         $event->post('/reflar/usermanagement/activate', 'reflar.usermanagement.activate', ActivateController::class);
     }
 
@@ -60,15 +61,17 @@ class AddApiAttributes
       * @param PrepareApiAttributes $event
       */
      public function addAttributes(PrepareApiAttributes $event) 
-     {  
+     {
+        if ($event->isSerializer(DiscussionSerializer::class)) {
+            $event->attributes['canStrike'] = $event->actor->can('strike', $event->model);
+        }
         if ($event->isSerializer(ForumSerializer::class)) {
             $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('ReFlar-emailRegEnabled');
             $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('ReFlar-amountPerPage');
         }
         if ($event->isSerializer(UserSerializer::class)) {
-            $canActivate = $event->actor->can('activate', $event->model);
             $event->attributes['is_activated'] = $event->model->is_activated;
-            $event->attributes['canActivate'] = $canActivate;
+            $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
         }
      }
   

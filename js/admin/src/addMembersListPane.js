@@ -13,9 +13,9 @@ export default function() {
     extend(AdminNav.prototype, 'items', items => {
         items.add('members', AdminLinkButton.component({
             href: app.route('members'),
-            icon: 'users',
-            children: app.translator.trans('Reflar-registration.admin.nav.title'),
-            description: app.translator.trans('Reflar-registration.admin.nav.desc')
+            icon: 'address-book-o',
+            children: app.translator.trans('reflar-usermanagement.admin.nav.title'),
+            description: app.translator.trans('reflar-usermanagement.admin.nav.desc')
         }));
     });
 }

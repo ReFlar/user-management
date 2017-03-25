@@ -1,5 +1,4 @@
-import app from 'flarum/app';
-import { extend } from 'flarum/extend';;
+import { extend } from 'flarum/extend';
 import addMembersListPane from 'Reflar/UserManagement/addMembersListPane';
 import PermissionGrid from 'flarum/components/PermissionGrid';
 
@@ -13,9 +12,9 @@ app.initializers.add('Reflar-User-Management', app => {
       permission: 'user.activate'
     });
     items.add('strike', {
-      icon: 'address-card-o',
+      icon: 'times',
       label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
-      permission: 'user.strike'
+      permission: 'discussion.strike'
     });
   });
 });

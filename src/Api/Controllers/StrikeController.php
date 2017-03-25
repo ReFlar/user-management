@@ -10,17 +10,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Reflar\UserManagement\Api\Controller;
+namespace Reflar\UserManagement\Api\Controllers;
 
 use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
-use Reflar\UserManagement\Commands\Strike;
+use Reflar\UserManagement\Commands\ServeStrike;
 use Flarum\Api\Controller\AbstractResourceController;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 use Zend\Diactoros\UploadedFile;
 
-class StrikeController extends AbstractResourceController
+class ServeStrikeController extends AbstractResourceController
 {
     public $serializer = StrikeSerializer::class;
     protected $bus;

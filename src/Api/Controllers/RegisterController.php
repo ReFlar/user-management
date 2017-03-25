@@ -48,7 +48,7 @@ class RegisterController implements ControllerInterface
      */
     public function handle(Request $request)
     {
-        $controller = 'Reflar\registration\Commands\CreateUserController';
+        $controller = 'Reflar\UserManagement\Api\Controllers\CreateUserController';
         $actor = $request->getAttribute('actor');
         $body = ['data' => ['attributes' => $request->getParsedBody()]];
         $response = $this->api->send($controller, $actor, [], $body);

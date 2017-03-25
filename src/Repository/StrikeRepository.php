@@ -14,7 +14,7 @@ namespace Reflar\UserManagement\Repository;
 
 use Flarum\Core\Repository\UserRepository;
 use Flarum\Core\User;
-use Reflar\UserManagement\Strikes;
+use Reflar\UserManagement\Strike;
 use Illuminate\Database\Eloquent\Builder;
 
 class StrikeRepository
@@ -32,12 +32,12 @@ class StrikeRepository
   
     public function query()
     {
-        return Strikes::query();
+        return Strike::query();
     }
   
     public function findOrFailCollection($userId)
     {
-        return Strikes::where('user_id', $userId)->get();
+        return Strike::where('user_id', $userId)->get();
     }
   
     public function findOrFail($id)
@@ -47,9 +47,9 @@ class StrikeRepository
   
     public function serveStrike($postId, User $user, $actorId, $reason) 
     {
-        $strike = new Strikes;
+        $strike = new Strike;
         $strike->user_id = $user->id;
-        $strike->post_id = $postId
+        $strike->post_id = $postId;
         $strike->actor_id = $actorId;
         $strike->reason = $reason;
         $strike->timestamp = time();

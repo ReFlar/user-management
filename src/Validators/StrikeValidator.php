@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Reflar\UserManagement\Validator;
+namespace Reflar\UserManagement\Validators;
 
 use Flarum\Core\Validator\AbstractValidator;
 
