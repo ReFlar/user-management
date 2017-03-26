@@ -16,5 +16,5 @@ use Flarum\Database\AbstractModel;
 
 class Strike extends AbstractModel
 {
-    protected $table = 'Strikes';
+    protected $table = 'strikes';
 }

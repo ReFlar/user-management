@@ -23,6 +23,7 @@ return [
             $table->integer('post_id');
             $table->integer('actor_id');
             $table->string('reason');
+            $table->string('post_content');
             $table->timestamp('time');
         });
     },

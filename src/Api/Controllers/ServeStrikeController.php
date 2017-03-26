@@ -35,7 +35,7 @@ class ServeStrikeController extends AbstractResourceController
         $reason = array_get($request->getParsedBody(), 'reason');
         $actor = $request->getAttribute('actor');
         return $this->bus->dispatch(
-            new Strike($post_id, $reason, $actor)
+            new ServeStrike($post_id, $reason, $actor)
         );
     }
 }

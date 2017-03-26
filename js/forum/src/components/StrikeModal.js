@@ -58,7 +58,7 @@ export default class StrikeModal extends Modal {
             "post_id": this.post,
             "reason": this.reason()
             }
-        }).then(
+        }).then(window.location.reload(),
             this.loaded.bind(this)
         );
     }

@@ -20,7 +20,6 @@ export default function() {
                 icon: 'times',
                 className: 'refar-usermanagement-strikeButon',
                 onclick: () => {
-                    console.log(post.data);
                     app.modal.show(new StrikeModal({id}));
                     
                 }

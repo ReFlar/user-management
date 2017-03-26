@@ -17,7 +17,6 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
                 icon: 'times',
                 className: 'refar-usermanagement-strikeButon',
                 onclick: function onclick() {
-                    console.log(post.data);
                     app.modal.show(new StrikeModal({ id: id }));
                 }
             }, app.translator.trans('reflar-usermanagement.forum.post_controls.strike_button'))]);
@@ -114,7 +113,7 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                                 "post_id": this.post,
                                 "reason": this.reason()
                             }
-                        }).then(this.loaded.bind(this));
+                        }).then(window.location.reload(), this.loaded.bind(this));
                     }
                 }]);
                 return StrikeModal;
