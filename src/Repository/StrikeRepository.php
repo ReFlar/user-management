@@ -17,6 +17,7 @@ use Flarum\Core\Post;
 use Flarum\Core\User;
 use Reflar\UserManagement\Strike;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class StrikeRepository
 {
@@ -36,9 +37,15 @@ class StrikeRepository
         return Strike::query();
     }
   
-    public function findOrFailCollection($userId)
+    public function findStrikesById($userId)
     {
-        return Strike::where('user_id', $userId)->get();
+        $strikes = Strike::where('user_id', $userId)->get();
+        $actor = $this->users->findOrFail($userId);
+        foreach ($strikes as $strike)
+        {
+            $strike['actor_id'] = $actor->username;
+        }
+        return $strikes;
     }
   
     public function findOrFail($id)

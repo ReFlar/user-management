@@ -39,7 +39,7 @@ class ServeStrikeHandler
     protected $discussions;
     protected $settings;
     protected $validator;
-    protected $strike;
+    protected $strikes;
 
     /**
      * @param Dispatcher                  $events
@@ -48,7 +48,7 @@ class ServeStrikeHandler
      * @param DiscussionRepository        $discussions
      * @param SettingsRepositoryInterface $settings
      * @param StrikeValidator             $validator
-     * @param StrikeRepository            $strike
+     * @param StrikeRepository            $strikes
      */
     public function __construct(
         Dispatcher $events,
@@ -57,7 +57,7 @@ class ServeStrikeHandler
         DiscussionRepository $discussions,
         SettingsRepositoryInterface $settings,
         StrikeValidator $validator,
-        StrikeRepository $strike
+        StrikeRepository $strikes
     ) {
         $this->events         = $events;
         $this->users          = $users;
@@ -65,7 +65,7 @@ class ServeStrikeHandler
         $this->discussions    = $discussions;
         $this->settings       = $settings;
         $this->validator      = $validator;
-        $this->strike         = $strike;
+        $this->strikes        = $strikes;
     }
 
     /**
@@ -89,7 +89,7 @@ class ServeStrikeHandler
         $this->events->fire(
             new UserWillBeGivenStrike($post, $user, $command->actor, $command->reason)
         );
-        $strike = $this->strike->serveStrike($post, $user, $command->actor->id, $command->reason);
+        $strike = $this->strikes->serveStrike($post, $user, $command->actor->id, $command->reason);
         
         if ($post instanceof CommentPost)
         {

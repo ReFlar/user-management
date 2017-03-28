@@ -19,11 +19,15 @@ class StrikeSerializer extends AbstractSerializer
 
     protected $type = 'strikes';
 
-    protected function getDefaultAttributes($strikes)
+    protected function getDefaultAttributes($strike)
     {
         return [
-            'post_id' => (int) $strikes->post_id,
-            'reason'  => $strikes->reason
+            'userId'  => (int) $strike->user_id,
+            'postId'  => (int) $strike->post_id,
+            'reason'  => $strike->reason,
+            'actor'   => $strike->actor_id,
+            'content' => $strike->post_content,
+            'time'    => $strike->time
         ];
     }
 }

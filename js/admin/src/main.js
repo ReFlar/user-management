@@ -16,5 +16,10 @@ app.initializers.add('Reflar-User-Management', app => {
       label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
       permission: 'discussion.strike'
     });
+    items.add('viewStrikes', {
+      icon: 'times',
+      label: app.translator.trans('Reflar-registration.admin.viewstrike_perm_item'),
+      permission: 'user.strike'
+    });
   });
 });

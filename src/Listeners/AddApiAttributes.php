@@ -21,6 +21,7 @@ use Flarum\Event\PrepareApiAttributes;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Reflar\UserManagement\Api\Controllers\ActivateController;
+use Reflar\UserManagement\Api\Controllers\ListStrikesController;
 use Reflar\UserManagement\Api\Controllers\RegisterController;
 use Reflar\UserManagement\Api\Controllers\ServeStrikeController;
 
@@ -53,8 +54,9 @@ class AddApiAttributes
     public function configureApiRoutes(ConfigureApiRoutes $event)
     {
         $event->post('/reflar/usermanagement/register', 'reflar.usermanagement.register', RegisterController::class);
-        $event->post('/reflar/usermanagement/strike', 'reflar.usermanagement.strike', ServeStrikeController::class); 
+        $event->post('/strike', 'strike', ServeStrikeController::class); 
         $event->post('/reflar/usermanagement/activate', 'reflar.usermanagement.activate', ActivateController::class);
+        $event->get('/strike/{userId}', 'strike', ListStrikesController::class);
     }
 
      /**
@@ -72,6 +74,7 @@ class AddApiAttributes
         if ($event->isSerializer(UserSerializer::class)) {
             $event->attributes['is_activated'] = $event->model->is_activated;
             $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
+            $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
         }
      }
   

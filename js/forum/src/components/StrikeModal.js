@@ -53,7 +53,7 @@ export default class StrikeModal extends Modal {
 
         app.request({
             method: 'POST',
-            url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/strike',
+            url: app.forum.attribute('apiUrl') + '/strike',
             data: {
             "post_id": this.post,
             "reason": this.reason()

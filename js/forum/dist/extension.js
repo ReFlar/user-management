@@ -44,6 +44,106 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
 });;
 'use strict';
 
+System.register('Reflar/UserManagement/components/ModStrikesModal', ['flarum/components/Modal', 'flarum/components/Button'], function (_export, _context) {
+  "use strict";
+
+  var Modal, Button, ModStrikeModal;
+  return {
+    setters: [function (_flarumComponentsModal) {
+      Modal = _flarumComponentsModal.default;
+    }, function (_flarumComponentsButton) {
+      Button = _flarumComponentsButton.default;
+    }],
+    execute: function () {
+      ModStrikeModal = function (_Modal) {
+        babelHelpers.inherits(ModStrikeModal, _Modal);
+
+        function ModStrikeModal() {
+          babelHelpers.classCallCheck(this, ModStrikeModal);
+          return babelHelpers.possibleConstructorReturn(this, (ModStrikeModal.__proto__ || Object.getPrototypeOf(ModStrikeModal)).apply(this, arguments));
+        }
+
+        babelHelpers.createClass(ModStrikeModal, [{
+          key: 'init',
+          value: function init() {
+            babelHelpers.get(ModStrikeModal.prototype.__proto__ || Object.getPrototypeOf(ModStrikeModal.prototype), 'init', this).call(this);
+            this.user = m.prop(this.props.user);
+          }
+        }, {
+          key: 'className',
+          value: function className() {
+            return 'ModStrikeModal Modal--small';
+          }
+        }, {
+          key: 'title',
+          value: function title() {
+            return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', { user: this.user });
+          }
+        }, {
+          key: 'content',
+          value: function content() {
+            return m(
+              'div',
+              { className: 'Modal-body' },
+              m(
+                'div',
+                { className: 'Form' },
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m(
+                    'label',
+                    null,
+                    app.translator.trans('antoinefr-money.forum.modal.current'),
+                    ' ',
+                    app.forum.data.attributes['antoinefr-money.moneyname'].replace('{money}', this.props.user.data.attributes['antoinefr-money.money'])
+                  ),
+                  m('input', { required: true, className: 'FormControl', type: 'number', step: 'any', value: this.money(), oninput: m.withAttr('value', this.money) })
+                ),
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m(
+                    Button,
+                    { className: 'Button Button--primary', loading: this.loading, type: 'submit' },
+                    app.translator.trans('antoinefr-money.forum.modal.submit_button')
+                  )
+                )
+              )
+            );
+          }
+        }, {
+          key: 'load',
+          value: function load() {
+
+            this.loading = true;
+            m.redraw();
+
+            console.log(app.store.find('strikes', 1));
+          }
+        }, {
+          key: 'onsubmit',
+          value: function onsubmit(e) {
+            var _this2 = this;
+
+            e.preventDefault();
+
+            this.loading = true;
+
+            this.props.user.save({ 'money': this.money() }).then(function () {
+              return _this2.hide();
+            }, this.loaded.bind(this));
+          }
+        }]);
+        return ModStrikeModal;
+      }(Modal);
+
+      _export('default', ModStrikeModal);
+    }
+  };
+});;
+'use strict';
+
 System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/components/Modal', 'flarum/components/Button', 'flarum/models/Discussion'], function (_export, _context) {
     "use strict";
 
@@ -108,7 +208,7 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
 
                         app.request({
                             method: 'POST',
-                            url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/strike',
+                            url: app.forum.attribute('apiUrl') + '/strike',
                             data: {
                                 "post_id": this.post,
                                 "reason": this.reason()
@@ -125,28 +225,49 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/main', ['flarum/extend', 'flarum/Model', 'flarum/models/Discussion', 'Reflar/UserManagement/addStrikeControls'], function (_export, _context) {
-    "use strict";
+System.register('Reflar/UserManagement/main', ['flarum/extend', 'flarum/components/Button', 'flarum/Model', 'flarum/utils/UserControls', 'flarum/models/Discussion', 'flarum/models/User', 'Reflar/UserManagement/addStrikeControls'], function (_export, _context) {
+  "use strict";
 
-    var extend, Model, Discussion, addStrikeControls;
-    return {
-        setters: [function (_flarumExtend) {
-            extend = _flarumExtend.extend;
-        }, function (_flarumModel) {
-            Model = _flarumModel.default;
-        }, function (_flarumModelsDiscussion) {
-            Discussion = _flarumModelsDiscussion.default;
-        }, function (_ReflarUserManagementAddStrikeControls) {
-            addStrikeControls = _ReflarUserManagementAddStrikeControls.default;
-        }],
-        execute: function () {
+  var extend, Button, Model, UserControls, Discussion, User, addStrikeControls;
+  return {
+    setters: [function (_flarumExtend) {
+      extend = _flarumExtend.extend;
+    }, function (_flarumComponentsButton) {
+      Button = _flarumComponentsButton.default;
+    }, function (_flarumModel) {
+      Model = _flarumModel.default;
+    }, function (_flarumUtilsUserControls) {
+      UserControls = _flarumUtilsUserControls.default;
+    }, function (_flarumModelsDiscussion) {
+      Discussion = _flarumModelsDiscussion.default;
+    }, function (_flarumModelsUser) {
+      User = _flarumModelsUser.default;
+    }, function (_ReflarUserManagementAddStrikeControls) {
+      addStrikeControls = _ReflarUserManagementAddStrikeControls.default;
+    }],
+    execute: function () {
 
-            app.initializers.add('Reflar-User-Management', function (app) {
+      app.initializers.add('Reflar-User-Management', function (app) {
 
-                Discussion.prototype.canStrike = Model.attribute('canStrike');
+        Discussion.prototype.canStrike = Model.attribute('canStrike');
+        User.prototype.canViewStrike = Model.attribute('canViewStrike');
 
-                addStrikeControls();
-            });
-        }
-    };
+        extend(UserControls, 'moderationControls', function (items, user) {
+          if (user.canViewStrike()) {
+            items.add('strikes', Button.component({
+              children: app.translator.trans('reflar-usermanagement.forum.user_controls.strike_button'),
+              icon: 'times',
+              onclick: function onclick() {
+                console.log(app.store.find('strike', '1') // app.modal.show(new ModStrikeModal({user}));
+                );
+              }
+
+            }));
+          }
+        });
+
+        addStrikeControls();
+      });
+    }
+  };
 });

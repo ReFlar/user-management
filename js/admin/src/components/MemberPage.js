@@ -38,7 +38,7 @@ function MemberItem(user) {
                                         });
                                   }
                               }, [
-                                  "Activate"
+                                  app.translator.trans('reflar-usermanagement.admin.page.activate')
                               ])
                             ])]
                     ]),
