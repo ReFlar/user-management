@@ -22,8 +22,9 @@ class StrikeSerializer extends AbstractSerializer
     protected function getDefaultAttributes($strike)
     {
         return [
+            'id'      => (int) $strike->id,
             'userId'  => (int) $strike->user_id,
-            'postId'  => (int) $strike->post_id,
+            'post'    => $strike->post,
             'reason'  => $strike->reason,
             'actor'   => $strike->actor_id,
             'content' => $strike->post_content,

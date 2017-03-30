@@ -41,5 +41,4 @@ class ServeStrike
         $this->post_id   = $post_id;
         $this->reason    = $reason;
         $this->actor     = $actor;
-    }
 }

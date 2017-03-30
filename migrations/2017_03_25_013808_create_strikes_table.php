@@ -24,7 +24,7 @@ return [
             $table->integer('actor_id');
             $table->string('reason');
             $table->string('post_content');
-            $table->timestamp('time');
+            $table->dateTime('time');
         });
     },
     'down' => function (Builder $schema) {

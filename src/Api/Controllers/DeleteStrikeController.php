@@ -16,7 +16,7 @@ use Tobscure\JsonApi\Document;
 use Reflar\UserManagement\Repository\StrikeRepository;
 use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
 
-class ListStrikesController extends AbstractCollectionController
+class DeleteStrikeController extends AbstractCollectionController
 {
   
     use AssertPermissionTrait;
@@ -38,7 +38,7 @@ class ListStrikesController extends AbstractCollectionController
     {
         $actor = $request->getAttribute('actor');
         $this->assertCan($request->getAttribute('actor'), 'user.strike');
-        $userId = array_get($request->getQueryParams(), 'userId');
-        return $this->strikes->findStrikesById($userId);
+        $id = array_get($request->getQueryParams(), 'id');
+        return $this->strikes->deleteStrike($id, $actor);
     }
 }

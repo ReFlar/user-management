@@ -9,6 +9,8 @@ export default class StrikeModal extends Modal {
         this.post = this.props.id;
       
         this.reason = m.prop('');
+      
+        this.time = new Date();
 
     }
 

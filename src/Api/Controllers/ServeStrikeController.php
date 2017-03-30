@@ -13,6 +13,7 @@
 namespace Reflar\UserManagement\Api\Controllers;
 
 use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
+use Reflar\UserManagement\Commands\DeleteStrike;
 use Reflar\UserManagement\Commands\ServeStrike;
 use Flarum\Api\Controller\AbstractResourceController;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -31,11 +32,19 @@ class ServeStrikeController extends AbstractResourceController
  
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $post_id = array_get($request->getParsedBody(), 'post_id');
-        $reason = array_get($request->getParsedBody(), 'reason');
         $actor = $request->getAttribute('actor');
-        return $this->bus->dispatch(
-            new ServeStrike($post_id, $reason, $actor)
-        );
+        $id = array_get($request->getParsedBody(), 'id');
+        if (isset($id)
+        {
+          return $this->bus->dispatch(
+                new DeleteStrike($id, $actor)
+            );
+        } else {
+            $post_id = array_get($request->getParsedBody(), 'post_id');
+            $reason = array_get($request->getParsedBody(), 'reason');
+            return $this->bus->dispatch(
+                new ServeStrike($post_id, $reason, $actor)
+            );
+        }
     }
 }

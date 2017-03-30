@@ -44,15 +44,19 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/components/ModStrikesModal', ['flarum/components/Modal', 'flarum/components/Button'], function (_export, _context) {
+System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/components/Modal', 'flarum/components/Button', 'flarum/helpers/humanTime', 'flarum/components/FieldSet'], function (_export, _context) {
   "use strict";
 
-  var Modal, Button, ModStrikeModal;
+  var Modal, Button, humanTime, FieldSet, ModStrikeModal;
   return {
     setters: [function (_flarumComponentsModal) {
       Modal = _flarumComponentsModal.default;
     }, function (_flarumComponentsButton) {
       Button = _flarumComponentsButton.default;
+    }, function (_flarumHelpersHumanTime) {
+      humanTime = _flarumHelpersHumanTime.default;
+    }, function (_flarumComponentsFieldSet) {
+      FieldSet = _flarumComponentsFieldSet.default;
     }],
     execute: function () {
       ModStrikeModal = function (_Modal) {
@@ -66,73 +70,65 @@ System.register('Reflar/UserManagement/components/ModStrikesModal', ['flarum/com
         babelHelpers.createClass(ModStrikeModal, [{
           key: 'init',
           value: function init() {
+            var _this2 = this;
+
             babelHelpers.get(ModStrikeModal.prototype.__proto__ || Object.getPrototypeOf(ModStrikeModal.prototype), 'init', this).call(this);
-            this.user = m.prop(this.props.user);
+
+            this.user = this.props.user;
+
+            app.request({
+              method: 'GET',
+              url: app.forum.attribute('apiUrl') + '/strike/' + this.user.data.id
+            }).then(function (response) {
+              _this2.strikes = response.data;
+              _this2.flatstrikes = [];
+              for (i = 0; i < _this2.user.data.attributes.strikes; i++) {
+                _this2.flatstrikes[i] = [];
+                _this2.flatstrikes[i]['index'] = i + 1;
+                _this2.flatstrikes[i]['id'] = _this2.strikes[i].attributes['id'];
+                _this2.flatstrikes[i]['actor'] = _this2.strikes[i].attributes['actor'];
+                _this2.flatstrikes[i]['post'] = _this2.strikes[i].attributes['post'];
+                _this2.flatstrikes[i]['time'] = new Date(_this2.strikes[i].attributes['time']);
+              }
+              m.redraw();
+              _this2.loading = false;
+            });
           }
         }, {
           key: 'className',
           value: function className() {
-            return 'ModStrikeModal Modal--small';
+            return 'ModStrikeModal Modal';
           }
         }, {
           key: 'title',
           value: function title() {
-            return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', { user: this.user });
+            return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', { user: this.user.username });
           }
         }, {
           key: 'content',
           value: function content() {
-            return m(
-              'div',
-              { className: 'Modal-body' },
-              m(
-                'div',
-                { className: 'Form' },
-                m(
-                  'div',
-                  { className: 'Form-group' },
-                  m(
-                    'label',
-                    null,
-                    app.translator.trans('antoinefr-money.forum.modal.current'),
-                    ' ',
-                    app.forum.data.attributes['antoinefr-money.moneyname'].replace('{money}', this.props.user.data.attributes['antoinefr-money.money'])
-                  ),
-                  m('input', { required: true, className: 'FormControl', type: 'number', step: 'any', value: this.money(), oninput: m.withAttr('value', this.money) })
-                ),
-                m(
-                  'div',
-                  { className: 'Form-group' },
-                  m(
-                    Button,
-                    { className: 'Button Button--primary', loading: this.loading, type: 'submit' },
-                    app.translator.trans('antoinefr-money.forum.modal.submit_button')
-                  )
-                )
-              )
-            );
+            var _this3 = this;
+
+            return m('div', { className: 'Modal-body' }, [m('div', { className: 'Form Form--centered' }, [FieldSet.component({
+              className: 'ModStrikeModal--fieldset',
+              children: [this.flatstrikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
+                return [m('tr', [m('td', [strike['index']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
+                    _this3.deleteStrike(strike['id']);
+                  } })])])];
+              })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
           }
         }, {
-          key: 'load',
-          value: function load() {
+          key: 'deleteStrike',
+          value: function deleteStrike(id) {
 
-            this.loading = true;
-            m.redraw();
-
-            console.log(app.store.find('strikes', 1));
-          }
-        }, {
-          key: 'onsubmit',
-          value: function onsubmit(e) {
-            var _this2 = this;
-
-            e.preventDefault();
+            if (this.loading) return;
 
             this.loading = true;
 
-            this.props.user.save({ 'money': this.money() }).then(function () {
-              return _this2.hide();
-            }, this.loaded.bind(this));
+            app.request({
+              method: 'Delete',
+              url: app.forum.attribute('apiUrl') + '/strike/' + id
+            }).then(app.modal.close(), this.loaded.bind(this));
           }
         }]);
         return ModStrikeModal;
@@ -173,6 +169,8 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                         this.post = this.props.id;
 
                         this.reason = m.prop('');
+
+                        this.time = new Date();
                     }
                 }, {
                     key: 'className',
@@ -225,10 +223,10 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/main', ['flarum/extend', 'flarum/components/Button', 'flarum/Model', 'flarum/utils/UserControls', 'flarum/models/Discussion', 'flarum/models/User', 'Reflar/UserManagement/addStrikeControls'], function (_export, _context) {
+System.register('Reflar/UserManagement/main', ['flarum/extend', 'flarum/components/Button', 'flarum/Model', 'flarum/utils/UserControls', 'flarum/models/Discussion', 'flarum/models/User', 'Reflar/UserManagement/addStrikeControls', 'Reflar/UserManagement/components/ModStrikeModal'], function (_export, _context) {
   "use strict";
 
-  var extend, Button, Model, UserControls, Discussion, User, addStrikeControls;
+  var extend, Button, Model, UserControls, Discussion, User, addStrikeControls, ModStrikeModal;
   return {
     setters: [function (_flarumExtend) {
       extend = _flarumExtend.extend;
@@ -244,13 +242,18 @@ System.register('Reflar/UserManagement/main', ['flarum/extend', 'flarum/componen
       User = _flarumModelsUser.default;
     }, function (_ReflarUserManagementAddStrikeControls) {
       addStrikeControls = _ReflarUserManagementAddStrikeControls.default;
+    }, function (_ReflarUserManagementComponentsModStrikeModal) {
+      ModStrikeModal = _ReflarUserManagementComponentsModStrikeModal.default;
     }],
     execute: function () {
 
       app.initializers.add('Reflar-User-Management', function (app) {
 
         Discussion.prototype.canStrike = Model.attribute('canStrike');
+
         User.prototype.canViewStrike = Model.attribute('canViewStrike');
+        User.prototype.canActivate = Model.attribute('canActivate');
+        User.prototype.strikes = Model.attribute('strikes');
 
         extend(UserControls, 'moderationControls', function (items, user) {
           if (user.canViewStrike()) {
@@ -258,8 +261,23 @@ System.register('Reflar/UserManagement/main', ['flarum/extend', 'flarum/componen
               children: app.translator.trans('reflar-usermanagement.forum.user_controls.strike_button'),
               icon: 'times',
               onclick: function onclick() {
-                console.log(app.store.find('strike', '1') // app.modal.show(new ModStrikeModal({user}));
-                );
+                app.modal.show(new ModStrikeModal({ user: user }));
+              }
+
+            }));
+          }
+          if ({ user: user }.user.data.attributes.isActivated == 0 && user.canActivate()) {
+            items.add('approve', Button.component({
+              children: app.translator.trans('reflar-usermanagement.forum.user_controls.activate_button'),
+              icon: 'check',
+              onclick: function onclick() {
+                app.request({
+                  url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/activate',
+                  method: 'POST',
+                  data: { username: { user: user }.user.data.attributes.username }
+                }).then(function () {
+                  return window.location.reload();
+                });
               }
 
             }));
