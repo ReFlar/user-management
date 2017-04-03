@@ -9,10 +9,11 @@
  */
 namespace Reflar\UserManagement\Api\Controllers;
 
-use Flarum\Core\Command\RegisterUser;
+use Flarum\Api\Controller\AbstractCreateController;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
+use Reflar\UserManagement\Commands\RegisterUser;
 
 class CreateUserController extends AbstractCreateController
 {

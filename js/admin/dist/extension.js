@@ -61,7 +61,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                     return window.location.reload();
                 });
             }
-        }, ["Activate"])])]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), m('a', {
+        }, [app.translator.trans('reflar-usermanagement.admin.page.activate')])])]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), m('a', {
             className: 'Button Button--link',
             target: '_blank',
             href: url
@@ -229,9 +229,21 @@ System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum
               { className: 'Form-group' },
               Switch.component({
                 className: "SettingsModal-switch",
-                state: this.setting('ReFlar-emailRegEnabled')(),
-                children: app.translator.trans('Reflar-registration.admin.modal.switch_label'),
+                state: this.setting('ReFlar-emailRegEnabled')() || false,
+                children: app.translator.trans('Reflar-registration.admin.modal.email_switch'),
                 onchange: this.setting('ReFlar-emailRegEnabled')
+              }),
+              Switch.component({
+                className: "SettingsModal-switch",
+                state: this.setting('ReFlar-genderRegEnabled')() || false,
+                children: app.translator.trans('Reflar-registration.admin.modal.gender_label'),
+                onchange: this.setting('ReFlar-genderRegEnabled')
+              }),
+              Switch.component({
+                className: "SettingsModal-switch",
+                state: this.setting('ReFlar-ageRegEnabled')() || false,
+                children: app.translator.trans('Reflar-registration.admin.modal.age_label'),
+                onchange: this.setting('ReFlar-ageRegEnabled')
               })
             ), m(
               'div',
@@ -239,7 +251,7 @@ System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum
               m(
                 'label',
                 null,
-                app.translator.trans('Reflar-registration.admin.modal.page_label')
+                app.translator.trans('Reflar-registration.admin.modal.amount_label')
               ),
               m('input', { className: 'FormControl', type: 'number', bidi: this.setting('ReFlar-amountPerPage') })
             )];
@@ -254,14 +266,12 @@ System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'Reflar/UserManagement/addMembersListPane', 'flarum/components/PermissionGrid'], function (_export, _context) {
+System.register('Reflar/UserManagement/main', ['flarum/extend', 'Reflar/UserManagement/addMembersListPane', 'flarum/components/PermissionGrid'], function (_export, _context) {
   "use strict";
 
-  var app, extend, addMembersListPane, PermissionGrid;
+  var extend, addMembersListPane, PermissionGrid;
   return {
-    setters: [function (_flarumApp) {
-      app = _flarumApp.default;
-    }, function (_flarumExtend) {
+    setters: [function (_flarumExtend) {
       extend = _flarumExtend.extend;
     }, function (_ReflarUserManagementAddMembersListPane) {
       addMembersListPane = _ReflarUserManagementAddMembersListPane.default;
@@ -269,8 +279,6 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'R
       PermissionGrid = _flarumComponentsPermissionGrid.default;
     }],
     execute: function () {
-      ;
-
 
       app.initializers.add('Reflar-User-Management', function (app) {
         addMembersListPane();
@@ -285,6 +293,11 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'R
             icon: 'times',
             label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
             permission: 'discussion.strike'
+          });
+          items.add('viewStrikes', {
+            icon: 'times',
+            label: app.translator.trans('Reflar-registration.admin.viewstrike_perm_item'),
+            permission: 'user.strike'
           });
         });
       });

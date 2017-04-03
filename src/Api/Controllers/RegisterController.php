@@ -16,6 +16,7 @@ use Flarum\Http\Rememberer;
 use Flarum\Http\SessionAuthenticator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\Diactoros\Response\JsonResponse;
+use Reflar\UserManagement\Api\Controllers\CreateUserController;
 
 class RegisterController implements ControllerInterface
 {
@@ -48,7 +49,7 @@ class RegisterController implements ControllerInterface
      */
     public function handle(Request $request)
     {
-        $controller = 'Reflar\UserManagement\Api\Controllers\CreateUserController';
+        $controller = CreateUserController::class;
         $actor = $request->getAttribute('actor');
         $body = ['data' => ['attributes' => $request->getParsedBody()]];
         $response = $this->api->send($controller, $actor, [], $body);

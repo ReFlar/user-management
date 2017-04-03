@@ -10,6 +10,8 @@
 namespace Reflar\UserManagement\Validators;
 
 use Flarum\Core\User;
+use Flarum\Core\Validator\AbstractValidator;
+use Flarum\Settings\SettingsRepositoryInterface;
 
 class UserValidator extends AbstractValidator
 {
@@ -21,6 +23,15 @@ class UserValidator extends AbstractValidator
      * @var User
      */
     protected $user;
+  
+    /**
+     * @param SettingsRepositoryInterface $settings
+     */
+    public function __construct(SettingsRepositoryInterface $settings)
+    {
+      $this->settings = $settings;
+    }
+  
     /**
      * @return User
      */
@@ -31,19 +42,17 @@ class UserValidator extends AbstractValidator
     /**
      * @param User $user
      */
-    public function setUser(User $user)
+    public function setUser(User $user, SettingsRepositoryInterface $settings)
     {
         $this->user = $user;
     }
     /**
      * {@inheritdoc}
      */
-    protected function getRules(SettingsRepositoryInterface $settings))
+    protected function getRules()
     {
         $idSuffix = $this->user ? ','.$this->user->id : '';
-        if ($settings->get('email_enabled') == 1)
-        {
-          return [
+          $validator = [
               'username' => [
                   'required',
                   'regex:/^[a-z0-9_-]+$/i',
@@ -54,42 +63,26 @@ class UserValidator extends AbstractValidator
               'password' => [
                   'required',
                   'min:8'
-              ],
-              'age' => [
-                  'int'
-              ],
-              'gender' => [
-                   'string'
               ]
           ];
       
-       } else {
-          return [
-              'username' => [
-                  'required',
-                  'regex:/^[a-z0-9_-]+$/i',
-                  'unique:users,username'.$idSuffix,
-                  'min:3',
-                  'max:30'
-              ],
-              'email' => [
-                  'required',
-                  'email',
-                  'unique:users,email'.$idSuffix
-              ],
-              'password' => [
-                  'required',
-                  'min:8'
-              ],
-              'age' => [
-                  'int'
-              ],
-              'gender' => [
-                   'string'
-              ]
-          ];
+      
+      if ($this->settings->get('ReFlar-emailRegEnabled') == false)
+        {
+          $validator['email'] = array('required','email','unique:users,email'.$idSuffix);
+        }
+      
+       if ($this->settings->get('ReFlar-ageRegEnabled') == true)
+        {
+          $validator['age'] = array('required','integer','max:100');
+        }
+      
+       if ($this->settings->get('ReFlar-genderRegEnabled') == true)
+        {
+          $validator['gender'] = array('required','string','in:Male,Female,Other');
+        }
+        return $validator;
        }
-    }
     /**
      * {@inheritdoc}
      */

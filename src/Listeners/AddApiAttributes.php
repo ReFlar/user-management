@@ -71,6 +71,8 @@ class AddApiAttributes
         }
         if ($event->isSerializer(ForumSerializer::class)) {
             $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('ReFlar-emailRegEnabled');
+            $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('ReFlar-genderRegEnabled');
+            $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('ReFlar-ageRegEnabled');
             $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('ReFlar-amountPerPage');
         }
         if ($event->isSerializer(UserSerializer::class)) {

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Reflar\UserManagement\Commands;;
+namespace Reflar\UserManagement\Commands;
 
 use Exception;
 use Flarum\Core\Access\AssertPermissionTrait;
@@ -17,6 +17,7 @@ use Flarum\Core\AuthToken;
 use Flarum\Core\Exception\PermissionDeniedException;
 use Flarum\Core\Support\DispatchEventsTrait;
 use Flarum\Event\UserWillBeSaved;
+use Flarum\Core\User;
 use Flarum\Foundation\Application;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -28,8 +29,7 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use League\Flysystem\MountManager;
-use Reflar\UserManagement\User;
-use Reflar\UserManagement\Validator\UserValidator;
+use Reflar\UserManagement\Validators\UserValidator;
 
 class RegisterUserHandler
 {
@@ -109,9 +109,8 @@ class RegisterUserHandler
 
             $password = $password ?: str_random(20);
         }
-
-        $user = User::register($username, $email, $password, $age, $gender);
-
+        $user = User::register($username, $email, $password);
+      
         // If a valid authentication token was provided, then we will assign
         // the attributes associated with it to the user's account. If this
         // includes an email address, then we will activate the user's account
@@ -122,7 +121,6 @@ class RegisterUserHandler
                     $user->$k = $v;
                 }
             }
-
             if (isset($token->payload['email'])) {
                 $user->activate();
             }
@@ -135,7 +133,6 @@ class RegisterUserHandler
         $this->events->fire(
             new UserWillBeSaved($user, $actor, $data)
         );
-
         $this->validator->assertValid(array_merge($user->getAttributes(), compact('password')));
 
         if ($avatarUrl = array_get($data, 'attributes.avatarUrl')) {
@@ -151,7 +148,6 @@ class RegisterUserHandler
                 //
             }
         }
-
         $user->save();
 
         if (isset($token)) {

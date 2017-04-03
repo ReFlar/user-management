@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Flarum\Core;
+namespace Reflar\UserManagement;
 
 use DomainException;
 use Flarum\Core\Access\Gate;
@@ -51,7 +51,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * @property int $discussions_count
  * @property int $comments_count
  */
-class User extends AbstractModel
+class ReflarUser extends AbstractModel
 {
     use EventGeneratorTrait;
     use ScopeVisibilityTrait;
@@ -152,24 +152,30 @@ class User extends AbstractModel
     /**
      * Register a new user.
      *
-     * @param string $username
-     * @param string $email
-     * @param string $password
+     * @param string  $username
+     * @param string  $email
+     * @param string  $password
+     * @param integer $age
+     * @param string  $gender
      * @return static
      */
     public static function register($username, $email, $password, $age, $gender)
     {
         $user = new static;
-
         $user->username = $username;
         $user->email = $email;
         $user->password = $password;
         $user->gender = $gender;
         $user->age = $age;
         $user->join_time = time();
+      
+        $userPass = $user;
+        
+        $userPass->age = null;
+        $userpass->gender = null;
 
-        $user->raise(new UserWasRegistered($user));
-
+        $user->raise(new UserWasRegistered($userPass));
+      
         return $user;
     }
 
