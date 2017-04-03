@@ -110,6 +110,8 @@ class RegisterUserHandler
             $password = $password ?: str_random(20);
         }
         $user = User::register($username, $email, $password);
+        $user->age = $age;
+        $user->gender = $gender;
       
         // If a valid authentication token was provided, then we will assign
         // the attributes associated with it to the user's account. If this
