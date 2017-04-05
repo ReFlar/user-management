@@ -13,14 +13,14 @@
 namespace Reflar\UserManagement\Api\Controllers;
 
 use Reflar\UserManagement\Api\Serializers\ActivateSerializer;
-use Reflar\UserManagement\Commands\Activate;
+use Reflar\UserManagement\Commands\Attributes;
 use Flarum\Api\Controller\AbstractResourceController;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 use Zend\Diactoros\UploadedFile;
 
-class ActivateController extends AbstractResourceController
+class AttributesController extends AbstractResourceController
 {
     public $serializer = ActivateSerializer::class;
     protected $bus;
@@ -31,10 +31,10 @@ class ActivateController extends AbstractResourceController
   
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $username = array_get($request->getParsedBody(), 'username');
+        $body = $request->getParsedBody();
         $actor = $request->getAttribute('actor');
         return $this->bus->dispatch(
-            new Activate($username, $actor)
+            new Attributes($body, $actor)
         );
     }
 }

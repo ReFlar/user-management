@@ -101,7 +101,8 @@ class RegisterUserHandler
         $password = array_get($data, 'attributes.password');
         $age = array_get($data, 'attributes.age');
         $gender = array_get($data, 'attributes.gender');
-        
+
+      
         // If a valid authentication token was provided as an attribute,
         // then we won't require the user to choose a password.
         if (isset($data['attributes']['token'])) {
@@ -110,7 +111,8 @@ class RegisterUserHandler
             $password = $password ?: str_random(20);
         }
         $user = User::register($username, $email, $password);
-      
+        $user->age = $age;
+        $user->gender = $gender;
         // If a valid authentication token was provided, then we will assign
         // the attributes associated with it to the user's account. If this
         // includes an email address, then we will activate the user's account
@@ -124,6 +126,10 @@ class RegisterUserHandler
             if (isset($token->payload['email'])) {
                 $user->activate();
             }
+        }
+      
+        if ($this->settings->get('ReFlar-emailRegEnabled') == true) {
+            $user->activate();
         }
 
         if ($actor->isAdmin() && array_get($data, 'attributes.isActivated')) {

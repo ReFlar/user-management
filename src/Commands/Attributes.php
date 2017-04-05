@@ -14,12 +14,12 @@ namespace Reflar\UserManagement\Commands;
 
 use Flarum\Core\User;
 
-class Activate
+class Attributes
 {  
     /**
-     * @var string
+     * @var array
      */
-    public $username;
+    public $body;
 
     /**
      * @var User
@@ -27,12 +27,12 @@ class Activate
     public $actor;
 
     /**
-     * @param string $username
-     * @param User   $actor
+     * @param array $body
+     * @param User  $actor
      */
-    public function __construct($username, User $actor)
+    public function __construct(array $body, User $actor)
     {
-        $this->username  = $username;
+        $this->body      = $body;
         $this->actor     = $actor;
     }
 }

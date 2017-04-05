@@ -8,8 +8,11 @@ import Discussion from 'flarum/models/Discussion';
 import LogInButtons from 'flarum/components/LogInButtons';
 import User from 'flarum/models/User';
 import SignUpModal from 'flarum/components/SignUpModal';
+import SettingsPage from 'flarum/components/SettingsPage';
+import UserCard from 'flarum/components/UserCard';
 import addStrikeControls from 'Reflar/UserManagement/addStrikeControls';
 import ModStrikeModal from 'Reflar/UserManagement/components/ModStrikeModal';
+import AgeGenderModal from 'Reflar/UserManagement/components/AgeGenderModal';
 
 app.initializers.add('Reflar-User-Management', function(app) {
 
@@ -18,7 +21,18 @@ app.initializers.add('Reflar-User-Management', function(app) {
     User.prototype.canViewStrike = Model.attribute('canViewStrike');
     User.prototype.canActivate = Model.attribute('canActivate');
     User.prototype.strikes = Model.attribute('strikes');
+    User.prototype.gender = Model.attribute('gender');
+    User.prototype.age = Model.attribute('age');
 
+    extend(UserCard.prototype, 'infoItems', function(items, user) {
+      items.add('gender',
+        this.props.user.data.attributes.gender
+      );
+      items.add('age',
+        app.translator.trans('reflar-usermanagement.forum.user.age').replace('{age}', this.props.user.data.attributes['age'])
+      );
+    });
+  
     extend(UserControls, 'moderationControls', function(items, user) {
     if (user.canViewStrike()) {
       items.add('strikes', Button.component({
@@ -36,7 +50,7 @@ app.initializers.add('Reflar-User-Management', function(app) {
         icon: 'check',
         onclick: function() {
           app.request({
-             url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/activate',
+             url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/attributes',
              method: 'POST',
              data: {username: {user}.user.data.attributes.username}
           }).then(function () {
@@ -134,6 +148,15 @@ app.initializers.add('Reflar-User-Management', function(app) {
       this.loaded.bind(this)
     );
   }
+ extend(SettingsPage.prototype, 'accountItems', (items, user) => {
+  items.add('Age/Gender',
+      Button.component({
+        className: "Button", 
+        onclick: () => {app.modal.show(new AgeGenderModal({user}))}}, 
+        [app.translator.trans('reflar-usermanagement.forum.user.settings')])
+    );
+  });
+        
  extend(SignUpModal.prototype, 'submitData', function (data) {
     const newData = data;
     newData['age'] = this.age();

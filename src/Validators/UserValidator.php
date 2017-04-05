@@ -9,6 +9,7 @@
  */
 namespace Reflar\UserManagement\Validators;
 
+use Flarum\Foundation\Application;
 use Flarum\Core\User;
 use Flarum\Core\Validator\AbstractValidator;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -16,21 +17,9 @@ use Flarum\Settings\SettingsRepositoryInterface;
 class UserValidator extends AbstractValidator
 {
     /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
-    /**
      * @var User
      */
     protected $user;
-  
-    /**
-     * @param SettingsRepositoryInterface $settings
-     */
-    public function __construct(SettingsRepositoryInterface $settings)
-    {
-      $this->settings = $settings;
-    }
   
     /**
      * @return User
@@ -42,7 +31,7 @@ class UserValidator extends AbstractValidator
     /**
      * @param User $user
      */
-    public function setUser(User $user, SettingsRepositoryInterface $settings)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }
@@ -50,7 +39,7 @@ class UserValidator extends AbstractValidator
      * {@inheritdoc}
      */
     protected function getRules()
-    {
+    {        
         $idSuffix = $this->user ? ','.$this->user->id : '';
           $validator = [
               'username' => [
@@ -67,17 +56,17 @@ class UserValidator extends AbstractValidator
           ];
       
       
-      if ($this->settings->get('ReFlar-emailRegEnabled') == false)
+      if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-emailRegEnabled') == false)
         {
           $validator['email'] = array('required','email','unique:users,email'.$idSuffix);
         }
       
-       if ($this->settings->get('ReFlar-ageRegEnabled') == true)
+       if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-ageRegEnabled') == true)
         {
           $validator['age'] = array('required','integer','max:100');
         }
       
-       if ($this->settings->get('ReFlar-genderRegEnabled') == true)
+       if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-genderRegEnabled') == true)
         {
           $validator['gender'] = array('required','string','in:Male,Female,Other');
         }

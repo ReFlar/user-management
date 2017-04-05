@@ -44,6 +44,171 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
 });;
 'use strict';
 
+System.register('Reflar/UserManagement/components/AgeGenderModal', ['flarum/components/Alert', 'flarum/components/Modal', 'flarum/components/Button'], function (_export, _context) {
+  "use strict";
+
+  var Alert, Modal, Button, AgeGenderModal;
+  return {
+    setters: [function (_flarumComponentsAlert) {
+      Alert = _flarumComponentsAlert.default;
+    }, function (_flarumComponentsModal) {
+      Modal = _flarumComponentsModal.default;
+    }, function (_flarumComponentsButton) {
+      Button = _flarumComponentsButton.default;
+    }],
+    execute: function () {
+      AgeGenderModal = function (_Modal) {
+        babelHelpers.inherits(AgeGenderModal, _Modal);
+
+        function AgeGenderModal() {
+          babelHelpers.classCallCheck(this, AgeGenderModal);
+          return babelHelpers.possibleConstructorReturn(this, (AgeGenderModal.__proto__ || Object.getPrototypeOf(AgeGenderModal)).apply(this, arguments));
+        }
+
+        babelHelpers.createClass(AgeGenderModal, [{
+          key: 'init',
+          value: function init() {
+            babelHelpers.get(AgeGenderModal.prototype.__proto__ || Object.getPrototypeOf(AgeGenderModal.prototype), 'init', this).call(this);
+
+            this.age = m.prop(app.session.user.age());
+            this.gender = m.prop(app.session.user.gender());
+
+            this.password = m.prop('');
+          }
+        }, {
+          key: 'className',
+          value: function className() {
+            return 'AgeGenderModal Modal--small';
+          }
+        }, {
+          key: 'title',
+          value: function title() {
+            return app.translator.trans('reflar-usermanagement.forum.account.modal.title');
+          }
+        }, {
+          key: 'content',
+          value: function content() {
+
+            return m(
+              'div',
+              { className: 'Modal-body' },
+              m(
+                'div',
+                { className: 'Form Form--centered' },
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m('input', { type: 'number', name: 'age', className: 'FormControl',
+                    placeholder: app.session.user.age(),
+                    bidi: this.age,
+                    disabled: this.loading })
+                ),
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m(
+                    'select',
+                    { className: 'FormControl', onchange: m.withAttr('value', this.gender) },
+                    this.gender() == "" ? m(
+                      'option',
+                      { value: '', disabled: true, selected: true },
+                      app.translator.trans('reflar-usermanagement.forum.signup.gender')
+                    ) : m(
+                      'option',
+                      { value: '', disabled: true },
+                      app.translator.trans('reflar-usermanagement.forum.signup.gender')
+                    ),
+                    this.gender() == app.translator.trans('reflar-usermanagement.forum.signup.male') ? m(
+                      'option',
+                      { value: app.translator.trans('reflar-usermanagement.forum.signup.male'), selected: true },
+                      app.translator.trans('reflar-usermanagement.forum.signup.male')
+                    ) : m(
+                      'option',
+                      { value: app.translator.trans('reflar-usermanagement.forum.signup.male') },
+                      app.translator.trans('reflar-usermanagement.forum.signup.male')
+                    ),
+                    this.gender() == app.translator.trans('reflar-usermanagement.forum.signup.female') ? m(
+                      'option',
+                      { value: app.translator.trans('reflar-usermanagement.forum.signup.female'), selected: true },
+                      app.translator.trans('reflar-usermanagement.forum.signup.female')
+                    ) : m(
+                      'option',
+                      { value: app.translator.trans('reflar-usermanagement.forum.signup.female') },
+                      app.translator.trans('reflar-usermanagement.forum.signup.female')
+                    ),
+                    this.gender() == app.translator.trans('reflar-usermanagement.forum.signup.other') ? m(
+                      'option',
+                      { value: app.translator.trans('reflar-usermanagement.forum.signup.other'), selected: true },
+                      app.translator.trans('reflar-usermanagement.forum.signup.other')
+                    ) : m(
+                      'option',
+                      { value: app.translator.trans('reflar-usermanagement.forum.signup.other') },
+                      app.translator.trans('reflar-usermanagement.forum.signup.other')
+                    )
+                  )
+                ),
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m('input', { type: 'password', name: 'password', className: 'FormControl',
+                    placeholder: app.translator.trans('core.forum.change_email.confirm_password_placeholder'),
+                    bidi: this.password,
+                    disabled: this.loading })
+                ),
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m(
+                    Button,
+                    { className: 'Button Button--primary', loading: this.loading, type: 'submit' },
+                    app.translator.trans('reflar-usermanagement.forum.account.modal.submit_button')
+                  )
+                )
+              )
+            );
+          }
+        }, {
+          key: 'onsubmit',
+          value: function onsubmit(e) {
+            e.preventDefault();
+
+            if (this.loading) return;
+
+            this.loading = true;
+
+            app.request({
+              url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/attributes',
+              method: 'POST',
+              data: { "gender": this.gender(), "age": this.age(), "password": this.password() },
+              errorHandler: this.onerror.bind(this)
+            }).then(this.success.bind(this));
+          }
+        }, {
+          key: 'success',
+          value: function success(response) {
+            app.alerts.show(this.successAlert = new Alert({ type: 'success', children: app.translator.trans('reflar-usermanagement.forum.account.modal.submit_success') }));
+            app.modal.close();
+          }
+        }, {
+          key: 'onerror',
+          value: function onerror(error) {
+            if (error.status === 401) {
+              error.alert.props.children = app.translator.trans('core.forum.change_email.incorrect_password_message');
+              this.loading = false;
+            }
+
+            babelHelpers.get(AgeGenderModal.prototype.__proto__ || Object.getPrototypeOf(AgeGenderModal.prototype), 'onerror', this).call(this, error);
+          }
+        }]);
+        return AgeGenderModal;
+      }(Modal);
+
+      _export('default', AgeGenderModal);
+    }
+  };
+});;
+'use strict';
+
 System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/components/Modal', 'flarum/components/Button', 'flarum/helpers/humanTime', 'flarum/components/FieldSet'], function (_export, _context) {
   "use strict";
 
@@ -223,10 +388,10 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'flarum/components/Button', 'flarum/utils/extractText', 'flarum/Model', 'flarum/utils/UserControls', 'flarum/models/Discussion', 'flarum/components/LogInButtons', 'flarum/models/User', 'flarum/components/SignUpModal', 'Reflar/UserManagement/addStrikeControls', 'Reflar/UserManagement/components/ModStrikeModal'], function (_export, _context) {
+System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'flarum/components/Button', 'flarum/utils/extractText', 'flarum/Model', 'flarum/utils/UserControls', 'flarum/models/Discussion', 'flarum/components/LogInButtons', 'flarum/models/User', 'flarum/components/SignUpModal', 'flarum/components/SettingsPage', 'flarum/components/UserCard', 'Reflar/UserManagement/addStrikeControls', 'Reflar/UserManagement/components/ModStrikeModal', 'Reflar/UserManagement/components/AgeGenderModal'], function (_export, _context) {
   "use strict";
 
-  var app, extend, Button, extractText, Model, UserControls, Discussion, LogInButtons, User, SignUpModal, addStrikeControls, ModStrikeModal;
+  var app, extend, Button, extractText, Model, UserControls, Discussion, LogInButtons, User, SignUpModal, SettingsPage, UserCard, addStrikeControls, ModStrikeModal, AgeGenderModal;
   return {
     setters: [function (_flarumApp) {
       app = _flarumApp.default;
@@ -248,10 +413,16 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
       User = _flarumModelsUser.default;
     }, function (_flarumComponentsSignUpModal) {
       SignUpModal = _flarumComponentsSignUpModal.default;
+    }, function (_flarumComponentsSettingsPage) {
+      SettingsPage = _flarumComponentsSettingsPage.default;
+    }, function (_flarumComponentsUserCard) {
+      UserCard = _flarumComponentsUserCard.default;
     }, function (_ReflarUserManagementAddStrikeControls) {
       addStrikeControls = _ReflarUserManagementAddStrikeControls.default;
     }, function (_ReflarUserManagementComponentsModStrikeModal) {
       ModStrikeModal = _ReflarUserManagementComponentsModStrikeModal.default;
+    }, function (_ReflarUserManagementComponentsAgeGenderModal) {
+      AgeGenderModal = _ReflarUserManagementComponentsAgeGenderModal.default;
     }],
     execute: function () {
 
@@ -262,6 +433,13 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
         User.prototype.canViewStrike = Model.attribute('canViewStrike');
         User.prototype.canActivate = Model.attribute('canActivate');
         User.prototype.strikes = Model.attribute('strikes');
+        User.prototype.gender = Model.attribute('gender');
+        User.prototype.age = Model.attribute('age');
+
+        extend(UserCard.prototype, 'infoItems', function (items, user) {
+          items.add('gender', this.props.user.data.attributes.gender);
+          items.add('age', app.translator.trans('reflar-usermanagement.forum.user.age').replace('{age}', this.props.user.data.attributes['age']));
+        });
 
         extend(UserControls, 'moderationControls', function (items, user) {
           if (user.canViewStrike()) {
@@ -280,7 +458,7 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
               icon: 'check',
               onclick: function onclick() {
                 app.request({
-                  url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/activate',
+                  url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/attributes',
                   method: 'POST',
                   data: { username: { user: user }.user.data.attributes.username }
                 }).then(function () {
@@ -398,6 +576,14 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
             return window.location.reload();
           }, this.loaded.bind(this));
         };
+        extend(SettingsPage.prototype, 'accountItems', function (items, user) {
+          items.add('Age/Gender', Button.component({
+            className: "Button",
+            onclick: function onclick() {
+              app.modal.show(new AgeGenderModal({ user: user }));
+            } }, [app.translator.trans('reflar-usermanagement.forum.user.settings')]));
+        });
+
         extend(SignUpModal.prototype, 'submitData', function (data) {
           var newData = data;
           newData['age'] = this.age();

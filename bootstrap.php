@@ -16,7 +16,6 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Flarum\Foundation\Application;
 
 return function (Dispatcher $events, Application $app) {
-    $events->subscribe(Listeners\RegistrationMailer::class);
     $events->subscribe(Listeners\AddApiAttributes::class);
     $events->subscribe(Listeners\AddClientAssets::class);
   

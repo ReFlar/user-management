@@ -20,7 +20,7 @@ use Flarum\Event\ConfigureApiRoutes;
 use Flarum\Event\PrepareApiAttributes;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
-use Reflar\UserManagement\Api\Controllers\ActivateController;
+use Reflar\UserManagement\Api\Controllers\AttributesController;
 use Reflar\UserManagement\Api\Controllers\DeleteStrikeController;
 use Reflar\UserManagement\Api\Controllers\ListStrikesController;
 use Reflar\UserManagement\Api\Controllers\RegisterController;
@@ -56,7 +56,7 @@ class AddApiAttributes
     {
         $event->post('/reflar/usermanagement/register', 'reflar.usermanagement.register', RegisterController::class);
         $event->post('/strike', 'strike', ServeStrikeController::class); 
-        $event->post('/reflar/usermanagement/activate', 'reflar.usermanagement.activate', ActivateController::class);
+        $event->post('/reflar/usermanagement/attributes', 'reflar.usermanagement.attributes', AttributesController::class);
         $event->get('/strike/{userId}', 'strike', ListStrikesController::class);
         $event->delete('/strike/{id}', 'strike', DeleteStrikeController::class);
     }
@@ -79,6 +79,8 @@ class AddApiAttributes
             $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
             $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
             $event->attributes['strikes'] = $event->actor->strikes;
+            $event->attributes['gender'] = $event->actor->gender;
+            $event->attributes['age'] = $event->actor->age;
         }
      }
   
