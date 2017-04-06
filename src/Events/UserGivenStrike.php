@@ -30,20 +30,21 @@ class UserGivenStrike
      */
     public $actor;
     /**
-     * @var String
+     * @var string
      */
     public $reason;
+
     /**
      * @param Post   $post
      * @param User   $user
      * @param User   $actor
-     * @param String $reason
+     * @param string $reason
      */
     public function __construct(Post $post, User $user, User $actor, $reason)
     {
-        $this->post   = $post;
-        $this->user   = $user;
-        $this->actor  = $actor;
+        $this->post = $post;
+        $this->user = $user;
+        $this->actor = $actor;
         $this->reason = $reason;
     }
 }

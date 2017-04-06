@@ -7,13 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Reflar\UserManagement\Api\Controllers;
 
 use Flarum\Api\Controller\AbstractCreateController;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
 use Reflar\UserManagement\Commands\RegisterUser;
+use Tobscure\JsonApi\Document;
 
 class CreateUserController extends AbstractCreateController
 {
@@ -25,6 +26,7 @@ class CreateUserController extends AbstractCreateController
      * @var Dispatcher
      */
     protected $bus;
+
     /**
      * @param Dispatcher $bus
      */
@@ -32,6 +34,7 @@ class CreateUserController extends AbstractCreateController
     {
         $this->bus = $bus;
     }
+
     /**
      * {@inheritdoc}
      */

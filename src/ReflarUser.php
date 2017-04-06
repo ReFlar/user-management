@@ -68,7 +68,7 @@ class ReflarUser extends AbstractModel
         'join_time',
         'last_seen_time',
         'read_time',
-        'notifications_read_time'
+        'notifications_read_time',
     ];
 
     /**
@@ -145,37 +145,38 @@ class ReflarUser extends AbstractModel
         });
 
         static::$dispatcher->fire(
-            new ConfigureUserPreferences
+            new ConfigureUserPreferences()
         );
     }
 
     /**
      * Register a new user.
      *
-     * @param string  $username
-     * @param string  $email
-     * @param string  $password
-     * @param integer $age
-     * @param string  $gender
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @param int    $age
+     * @param string $gender
+     *
      * @return static
      */
     public static function register($username, $email, $password, $age, $gender)
     {
-        $user = new static;
+        $user = new static();
         $user->username = $username;
         $user->email = $email;
         $user->password = $password;
         $user->gender = $gender;
         $user->age = $age;
         $user->join_time = time();
-      
+
         $userPass = $user;
-        
+
         $userPass->age = null;
         $userpass->gender = null;
 
         $user->raise(new UserWasRegistered($userPass));
-      
+
         return $user;
     }
 
@@ -199,6 +200,7 @@ class ReflarUser extends AbstractModel
      * Rename the user.
      *
      * @param string $username
+     *
      * @return $this
      */
     public function rename($username)
@@ -216,6 +218,7 @@ class ReflarUser extends AbstractModel
      * Change the user's email.
      *
      * @param string $email
+     *
      * @return $this
      */
     public function changeEmail($email)
@@ -233,6 +236,7 @@ class ReflarUser extends AbstractModel
      * Request that the user's email be changed.
      *
      * @param string $email
+     *
      * @return $this
      */
     public function requestEmailChange($email)
@@ -248,6 +252,7 @@ class ReflarUser extends AbstractModel
      * Change the user's password.
      *
      * @param string $password
+     *
      * @return $this
      */
     public function changePassword($password)
@@ -273,6 +278,7 @@ class ReflarUser extends AbstractModel
      * Change the user's bio.
      *
      * @param string $bio
+     *
      * @return $this
      */
     public function changeBio($bio)
@@ -312,6 +318,7 @@ class ReflarUser extends AbstractModel
      * Change the path of the user avatar.
      *
      * @param string $path
+     *
      * @return $this
      */
     public function changeAvatarPath($path)
@@ -327,6 +334,7 @@ class ReflarUser extends AbstractModel
      * Get the URL of the user's avatar.
      *
      * @todo Allow different storage locations to be used
+     *
      * @return string
      */
     public function getAvatarUrlAttribute()
@@ -341,6 +349,7 @@ class ReflarUser extends AbstractModel
      * haven't set one.
      *
      * @param string $value
+     *
      * @return string
      */
     public function getLocaleAttribute($value)
@@ -352,6 +361,7 @@ class ReflarUser extends AbstractModel
      * Check if a given password matches the user's password.
      *
      * @param string $password
+     *
      * @return bool
      */
     public function checkPassword($password)
@@ -385,6 +395,7 @@ class ReflarUser extends AbstractModel
      * Check whether the user has a certain permission based on their groups.
      *
      * @param string $permission
+     *
      * @return bool
      */
     public function hasPermission($permission)
@@ -405,6 +416,7 @@ class ReflarUser extends AbstractModel
      * based on their groups.
      *
      * @param string $match
+     *
      * @return bool
      */
     public function hasPermissionLike($match)
@@ -486,6 +498,7 @@ class ReflarUser extends AbstractModel
      * transforming their stored preferences and merging them with the defaults.
      *
      * @param string $value
+     *
      * @return array
      */
     public function getPreferencesAttribute($value)
@@ -514,6 +527,7 @@ class ReflarUser extends AbstractModel
      * type.
      *
      * @param string $type
+     *
      * @return bool
      */
     public function shouldAlert($type)
@@ -526,6 +540,7 @@ class ReflarUser extends AbstractModel
      * type.
      *
      * @param string $type
+     *
      * @return bool
      */
     public function shouldEmail($type)
@@ -537,7 +552,8 @@ class ReflarUser extends AbstractModel
      * Get the value of a preference for this user.
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getPreference($key, $default = null)
@@ -549,7 +565,8 @@ class ReflarUser extends AbstractModel
      * Set the value of a preference for this user.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return $this
      */
     public function setPreference($key, $value)
@@ -557,7 +574,7 @@ class ReflarUser extends AbstractModel
         if (isset(static::$preferences[$key])) {
             $preferences = $this->preferences;
 
-            if (! is_null($transformer = static::$preferences[$key]['transformer'])) {
+            if (!is_null($transformer = static::$preferences[$key]['transformer'])) {
                 $preferences[$key] = call_user_func($transformer, $value);
             } else {
                 $preferences[$key] = $value;
@@ -685,8 +702,9 @@ class ReflarUser extends AbstractModel
     }
 
     /**
-     * @param string $ability
+     * @param string      $ability
      * @param array|mixed $arguments
+     *
      * @return bool
      */
     public function can($ability, $arguments = [])
@@ -695,13 +713,14 @@ class ReflarUser extends AbstractModel
     }
 
     /**
-     * @param string $ability
+     * @param string      $ability
      * @param array|mixed $arguments
+     *
      * @return bool
      */
     public function cannot($ability, $arguments = [])
     {
-        return ! $this->can($ability, $arguments);
+        return !$this->can($ability, $arguments);
     }
 
     /**
@@ -733,9 +752,9 @@ class ReflarUser extends AbstractModel
     /**
      * Register a preference with a transformer and a default value.
      *
-     * @param string $key
+     * @param string   $key
      * @param callable $transformer
-     * @param mixed $default
+     * @param mixed    $default
      */
     public static function addPreference($key, callable $transformer = null, $default = null)
     {
@@ -748,6 +767,7 @@ class ReflarUser extends AbstractModel
      *
      * @param string $type
      * @param string $method
+     *
      * @return string
      */
     public static function getNotificationPreferenceKey($type, $method)

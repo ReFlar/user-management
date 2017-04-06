@@ -16,13 +16,12 @@ use Flarum\Api\Serializer\AbstractSerializer;
 
 class ActivateSerializer extends AbstractSerializer
 {
-
     protected $type = 'users';
 
     protected function getDefaultAttributes($users)
     {
         return [
-            'username' => $users->username
+            'username' => $users->username,
         ];
     }
 }

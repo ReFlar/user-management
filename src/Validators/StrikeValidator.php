@@ -24,11 +24,11 @@ class StrikeValidator extends AbstractValidator
         return [
             'post_id' => [
                 'required',
-                'int'
+                'int',
             ],
             'reason' => [
                 'required',
-                'string'
+                'string',
             ],
         ];
     }
