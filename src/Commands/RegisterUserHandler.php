@@ -113,10 +113,7 @@ class RegisterUserHandler
         $user = User::register($username, $email, $password);
         $user->age = $age;
         $user->gender = $gender;
-<<<<<<< HEAD
-=======
       
->>>>>>> 334212b0b67df391d978334d31ce201c1580bd93
         // If a valid authentication token was provided, then we will assign
         // the attributes associated with it to the user's account. If this
         // includes an email address, then we will activate the user's account
