@@ -2,9 +2,10 @@ import app from 'flarum/app';
 import Page from 'flarum/components/Page';
 import Button from 'flarum/components/Button';
 import LoadingIndicator from 'flarum/components/LoadingIndicator';
-import MemberSettingsModal from 'Reflar/UserManagement/components/MemberSettingsModal'
+import MemberSettingsModal from 'Reflar/UserManagement/components/MemberSettingsModal';
 import humanTime from 'flarum/helpers/humanTime';
 import icon from 'flarum/helpers/icon';
+import AdminStrikeModal from 'Reflar/UserManagement/components/AdminStrikeModal';
 
 
 function MemberItem(user) {
@@ -50,6 +51,14 @@ function MemberItem(user) {
                       icon('reorder'),
                       user.discussionsCount()
                   ]),
+                 Button.component({
+                    className: 'Button Button--link',
+                    icon: 'times',
+                    onclick: function (e) {
+                        e.preventDefault();
+                        app.modal.show(new AdminStrikeModal({user}));
+                    }
+                  }),
                   m('a', {
                       className: 'Button Button--link',
                       target: '_blank',

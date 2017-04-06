@@ -3,7 +3,7 @@ import Button from 'flarum/components/Button';
 import humanTime from 'flarum/helpers/humanTime';
 import FieldSet from 'flarum/components/FieldSet';
 
-export default class ModStrikeModal extends Modal {
+export default class AdminStrikeModal extends Modal {
   init() {
     super.init();
     
@@ -35,9 +35,9 @@ export default class ModStrikeModal extends Modal {
   }
 
   title() {
-    return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title').replace('{user}', this.user.username);
+    return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', {user: this.user.username});
   }
-  
+
   content() {
     return (
       m('div', {className: 'Modal-body'}, [

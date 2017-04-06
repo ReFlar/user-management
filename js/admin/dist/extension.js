@@ -39,10 +39,106 @@ System.register('Reflar/UserManagement/addMembersListPane', ['flarum/app', 'flar
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'flarum/components/Page', 'flarum/components/Button', 'flarum/components/LoadingIndicator', 'Reflar/UserManagement/components/MemberSettingsModal', 'flarum/helpers/humanTime', 'flarum/helpers/icon'], function (_export, _context) {
+System.register('Reflar/UserManagement/components/AdminStrikeModal', ['flarum/components/Modal', 'flarum/components/Button', 'flarum/helpers/humanTime', 'flarum/components/FieldSet'], function (_export, _context) {
+  "use strict";
+
+  var Modal, Button, humanTime, FieldSet, AdminStrikeModal;
+  return {
+    setters: [function (_flarumComponentsModal) {
+      Modal = _flarumComponentsModal.default;
+    }, function (_flarumComponentsButton) {
+      Button = _flarumComponentsButton.default;
+    }, function (_flarumHelpersHumanTime) {
+      humanTime = _flarumHelpersHumanTime.default;
+    }, function (_flarumComponentsFieldSet) {
+      FieldSet = _flarumComponentsFieldSet.default;
+    }],
+    execute: function () {
+      AdminStrikeModal = function (_Modal) {
+        babelHelpers.inherits(AdminStrikeModal, _Modal);
+
+        function AdminStrikeModal() {
+          babelHelpers.classCallCheck(this, AdminStrikeModal);
+          return babelHelpers.possibleConstructorReturn(this, (AdminStrikeModal.__proto__ || Object.getPrototypeOf(AdminStrikeModal)).apply(this, arguments));
+        }
+
+        babelHelpers.createClass(AdminStrikeModal, [{
+          key: 'init',
+          value: function init() {
+            var _this2 = this;
+
+            babelHelpers.get(AdminStrikeModal.prototype.__proto__ || Object.getPrototypeOf(AdminStrikeModal.prototype), 'init', this).call(this);
+
+            this.user = this.props.user;
+
+            app.request({
+              method: 'GET',
+              url: app.forum.attribute('apiUrl') + '/strike/' + this.user.data.id
+            }).then(function (response) {
+              _this2.strikes = response.data;
+              _this2.flatstrikes = [];
+              for (i = 0; i < _this2.user.data.attributes.strikes; i++) {
+                _this2.flatstrikes[i] = [];
+                _this2.flatstrikes[i]['index'] = i + 1;
+                _this2.flatstrikes[i]['id'] = _this2.strikes[i].attributes['id'];
+                _this2.flatstrikes[i]['actor'] = _this2.strikes[i].attributes['actor'];
+                _this2.flatstrikes[i]['post'] = _this2.strikes[i].attributes['post'];
+                _this2.flatstrikes[i]['time'] = new Date(_this2.strikes[i].attributes['time']);
+              }
+              m.redraw();
+              _this2.loading = false;
+            });
+          }
+        }, {
+          key: 'className',
+          value: function className() {
+            return 'ModStrikeModal Modal';
+          }
+        }, {
+          key: 'title',
+          value: function title() {
+            return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', { user: this.user.username });
+          }
+        }, {
+          key: 'content',
+          value: function content() {
+            var _this3 = this;
+
+            return m('div', { className: 'Modal-body' }, [m('div', { className: 'Form Form--centered' }, [FieldSet.component({
+              className: 'ModStrikeModal--fieldset',
+              children: [this.flatstrikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
+                return [m('tr', [m('td', [strike['index']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
+                    _this3.deleteStrike(strike['id']);
+                  } })])])];
+              })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
+          }
+        }, {
+          key: 'deleteStrike',
+          value: function deleteStrike(id) {
+
+            if (this.loading) return;
+
+            this.loading = true;
+
+            app.request({
+              method: 'Delete',
+              url: app.forum.attribute('apiUrl') + '/strike/' + id
+            }).then(app.modal.close(), this.loaded.bind(this));
+          }
+        }]);
+        return AdminStrikeModal;
+      }(Modal);
+
+      _export('default', AdminStrikeModal);
+    }
+  };
+});;
+'use strict';
+
+System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'flarum/components/Page', 'flarum/components/Button', 'flarum/components/LoadingIndicator', 'Reflar/UserManagement/components/MemberSettingsModal', 'flarum/helpers/humanTime', 'flarum/helpers/icon', 'Reflar/UserManagement/components/AdminStrikeModal'], function (_export, _context) {
     "use strict";
 
-    var app, Page, Button, LoadingIndicator, MemberSettingsModal, humanTime, icon, MemberPage;
+    var app, Page, Button, LoadingIndicator, MemberSettingsModal, humanTime, icon, AdminStrikeModal, MemberPage;
 
 
     function MemberItem(user) {
@@ -61,7 +157,14 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                     return window.location.reload();
                 });
             }
-        }, [app.translator.trans('reflar-usermanagement.admin.page.activate')])])]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), m('a', {
+        }, [app.translator.trans('reflar-usermanagement.admin.page.activate')])])]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), Button.component({
+            className: 'Button Button--link',
+            icon: 'times',
+            onclick: function onclick(e) {
+                e.preventDefault();
+                app.modal.show(new AdminStrikeModal({ user: user }));
+            }
+        }), m('a', {
             className: 'Button Button--link',
             target: '_blank',
             href: url
@@ -83,6 +186,8 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
             humanTime = _flarumHelpersHumanTime.default;
         }, function (_flarumHelpersIcon) {
             icon = _flarumHelpersIcon.default;
+        }, function (_ReflarUserManagementComponentsAdminStrikeModal) {
+            AdminStrikeModal = _ReflarUserManagementComponentsAdminStrikeModal.default;
         }],
         execute: function () {
             MemberPage = function (_Page) {
@@ -187,120 +292,4 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
             _export('default', MemberPage);
         }
     };
-});;
-'use strict';
-
-System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum/app', 'flarum/components/SettingsModal', 'flarum/components/Switch'], function (_export, _context) {
-  "use strict";
-
-  var app, SettingsModal, Switch, MemberSettingsModal;
-  return {
-    setters: [function (_flarumApp) {
-      app = _flarumApp.default;
-    }, function (_flarumComponentsSettingsModal) {
-      SettingsModal = _flarumComponentsSettingsModal.default;
-    }, function (_flarumComponentsSwitch) {
-      Switch = _flarumComponentsSwitch.default;
-    }],
-    execute: function () {
-      MemberSettingsModal = function (_SettingsModal) {
-        babelHelpers.inherits(MemberSettingsModal, _SettingsModal);
-
-        function MemberSettingsModal() {
-          babelHelpers.classCallCheck(this, MemberSettingsModal);
-          return babelHelpers.possibleConstructorReturn(this, (MemberSettingsModal.__proto__ || Object.getPrototypeOf(MemberSettingsModal)).apply(this, arguments));
-        }
-
-        babelHelpers.createClass(MemberSettingsModal, [{
-          key: 'className',
-          value: function className() {
-            return 'SettingsModal Modal--small';
-          }
-        }, {
-          key: 'title',
-          value: function title() {
-            return app.translator.trans('Reflar-registration.admin.modal.settings_title');
-          }
-        }, {
-          key: 'form',
-          value: function form() {
-            return [m(
-              'div',
-              { className: 'Form-group' },
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-emailRegEnabled')() || false,
-                children: app.translator.trans('Reflar-registration.admin.modal.email_switch'),
-                onchange: this.setting('ReFlar-emailRegEnabled')
-              }),
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-genderRegEnabled')() || false,
-                children: app.translator.trans('Reflar-registration.admin.modal.gender_label'),
-                onchange: this.setting('ReFlar-genderRegEnabled')
-              }),
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-ageRegEnabled')() || false,
-                children: app.translator.trans('Reflar-registration.admin.modal.age_label'),
-                onchange: this.setting('ReFlar-ageRegEnabled')
-              })
-            ), m(
-              'div',
-              { className: 'Form-group' },
-              m(
-                'label',
-                null,
-                app.translator.trans('Reflar-registration.admin.modal.amount_label')
-              ),
-              m('input', { className: 'FormControl', type: 'number', bidi: this.setting('ReFlar-amountPerPage') })
-            )];
-          }
-        }]);
-        return MemberSettingsModal;
-      }(SettingsModal);
-
-      _export('default', MemberSettingsModal);
-    }
-  };
-});;
-'use strict';
-
-System.register('Reflar/UserManagement/main', ['flarum/extend', 'Reflar/UserManagement/addMembersListPane', 'flarum/components/PermissionGrid'], function (_export, _context) {
-  "use strict";
-
-  var extend, addMembersListPane, PermissionGrid;
-  return {
-    setters: [function (_flarumExtend) {
-      extend = _flarumExtend.extend;
-    }, function (_ReflarUserManagementAddMembersListPane) {
-      addMembersListPane = _ReflarUserManagementAddMembersListPane.default;
-    }, function (_flarumComponentsPermissionGrid) {
-      PermissionGrid = _flarumComponentsPermissionGrid.default;
-    }],
-    execute: function () {
-
-      app.initializers.add('Reflar-User-Management', function (app) {
-        addMembersListPane();
-
-        extend(PermissionGrid.prototype, 'moderateItems', function (items) {
-          items.add('activate', {
-            icon: 'address-card-o',
-            label: app.translator.trans('Reflar-registration.admin.activate_perm_item'),
-            permission: 'user.activate'
-          });
-          items.add('strike', {
-            icon: 'times',
-            label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
-            permission: 'discussion.strike'
-          });
-          items.add('viewStrikes', {
-            icon: 'times',
-            label: app.translator.trans('Reflar-registration.admin.viewstrike_perm_item'),
-            permission: 'user.strike'
-          });
-        });
-      });
-    }
-  };
 });
