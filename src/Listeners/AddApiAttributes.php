@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * This file is part of reflar/user-management.
  *
@@ -13,9 +14,8 @@
 namespace Reflar\UserManagement\Listeners;
 
 use Flarum\Api\Serializer\DiscussionSerializer;
-use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
-use Flarum\Event\ConfigureLocales;
+use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Event\ConfigureApiRoutes;
 use Flarum\Event\PrepareApiAttributes;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -40,22 +40,23 @@ class AddApiAttributes
     {
         $this->settings = $settings;
     }
-     /**
-      * @param Dispatcher $events
-      */
+
+    /**
+     * @param Dispatcher $events
+     */
     public function subscribe(Dispatcher $events)
     {
         $events->listen(ConfigureApiRoutes::class, [$this, 'configureApiRoutes']);
         $events->listen(PrepareApiAttributes::class, [$this, 'addAttributes']);
     }
-    
+
     /**
      * @param ConfigureApiRoutes $event
      */
     public function configureApiRoutes(ConfigureApiRoutes $event)
     {
         $event->post('/reflar/usermanagement/register', 'reflar.usermanagement.register', RegisterController::class);
-        $event->post('/strike', 'strike', ServeStrikeController::class); 
+        $event->post('/strike', 'strike', ServeStrikeController::class);
         $event->post('/reflar/usermanagement/attributes', 'reflar.usermanagement.attributes', AttributesController::class);
         $event->get('/strike/{userId}', 'strike', ListStrikesController::class);
         $event->delete('/strike/{id}', 'strike', DeleteStrikeController::class);
@@ -64,24 +65,23 @@ class AddApiAttributes
      /**
       * @param PrepareApiAttributes $event
       */
-     public function addAttributes(PrepareApiAttributes $event) 
+     public function addAttributes(PrepareApiAttributes $event)
      {
-        if ($event->isSerializer(DiscussionSerializer::class)) {
-            $event->attributes['canStrike'] = $event->actor->can('strike', $event->model);
-        }
-        if ($event->isSerializer(ForumSerializer::class)) {
-            $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('ReFlar-emailRegEnabled');
-            $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('ReFlar-genderRegEnabled');
-            $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('ReFlar-ageRegEnabled');
-            $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('ReFlar-amountPerPage');
-        }
-        if ($event->isSerializer(UserSerializer::class)) {
-            $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
-            $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
-            $event->attributes['strikes'] = $event->actor->strikes;
-            $event->attributes['gender'] = $event->actor->gender;
-            $event->attributes['age'] = $event->actor->age;
-        }
+         if ($event->isSerializer(DiscussionSerializer::class)) {
+             $event->attributes['canStrike'] = $event->actor->can('strike', $event->model);
+         }
+         if ($event->isSerializer(ForumSerializer::class)) {
+             $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('ReFlar-emailRegEnabled');
+             $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('ReFlar-genderRegEnabled');
+             $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('ReFlar-ageRegEnabled');
+             $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('ReFlar-amountPerPage');
+         }
+         if ($event->isSerializer(UserSerializer::class)) {
+             $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
+             $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
+             $event->attributes['strikes'] = $event->actor->strikes;
+             $event->attributes['gender'] = $event->actor->gender;
+             $event->attributes['age'] = $event->actor->age;
+         }
      }
-  
 }

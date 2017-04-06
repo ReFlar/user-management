@@ -16,8 +16,8 @@ use Flarum\Core\Access\AssertPermissionTrait;
 use Flarum\Core\AuthToken;
 use Flarum\Core\Exception\PermissionDeniedException;
 use Flarum\Core\Support\DispatchEventsTrait;
-use Flarum\Event\UserWillBeSaved;
 use Flarum\Core\User;
+use Flarum\Event\UserWillBeSaved;
 use Flarum\Foundation\Application;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -62,12 +62,12 @@ class RegisterUserHandler
     private $validatorFactory;
 
     /**
-     * @param Dispatcher $events
+     * @param Dispatcher                  $events
      * @param SettingsRepositoryInterface $settings
-     * @param UserValidator $validator
-     * @param Application $app
-     * @param FilesystemInterface $uploadDir
-     * @param Factory $validatorFactory
+     * @param UserValidator               $validator
+     * @param Application                 $app
+     * @param FilesystemInterface         $uploadDir
+     * @param Factory                     $validatorFactory
      */
     public function __construct(Dispatcher $events, SettingsRepositoryInterface $settings, UserValidator $validator, Application $app, FilesystemInterface $uploadDir, Factory $validatorFactory)
     {
@@ -81,10 +81,12 @@ class RegisterUserHandler
 
     /**
      * @param RegisterUser $command
-     * @throws PermissionDeniedException if signup is closed and the actor is
-     *     not an administrator.
+     *
+     * @throws PermissionDeniedException                                if signup is closed and the actor is
+     *                                                                  not an administrator.
      * @throws \Flarum\Core\Exception\InvalidConfirmationTokenException if an
-     *     email confirmation token is provided but is invalid.
+     *                                                                  email confirmation token is provided but is invalid.
+     *
      * @return User
      */
     public function handle(RegisterUser $command)
@@ -92,7 +94,7 @@ class RegisterUserHandler
         $actor = $command->actor;
         $data = $command->data;
 
-        if (! $this->settings->get('allow_sign_up')) {
+        if (!$this->settings->get('allow_sign_up')) {
             $this->assertAdmin($actor);
         }
 
@@ -102,7 +104,6 @@ class RegisterUserHandler
         $age = array_get($data, 'attributes.age');
         $gender = array_get($data, 'attributes.gender');
 
-      
         // If a valid authentication token was provided as an attribute,
         // then we won't require the user to choose a password.
         if (isset($data['attributes']['token'])) {
@@ -113,7 +114,7 @@ class RegisterUserHandler
         $user = User::register($username, $email, $password);
         $user->age = $age;
         $user->gender = $gender;
-      
+
         // If a valid authentication token was provided, then we will assign
         // the attributes associated with it to the user's account. If this
         // includes an email address, then we will activate the user's account
@@ -128,7 +129,7 @@ class RegisterUserHandler
                 $user->activate();
             }
         }
-      
+
         if ($this->settings->get('ReFlar-emailRegEnabled') == true) {
             $user->activate();
         }
@@ -170,7 +171,7 @@ class RegisterUserHandler
     {
         $tmpFile = tempnam($this->app->storagePath().'/tmp', 'avatar');
 
-        $manager = new ImageManager;
+        $manager = new ImageManager();
         $manager->make($url)->fit(100, 100)->save($tmpFile);
 
         $mount = new MountManager([

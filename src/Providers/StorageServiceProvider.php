@@ -14,10 +14,6 @@ namespace Reflar\UserManagement\Providers;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\ServiceProvider;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemInterface;
-use Flarum\Settings\SettingsRepositoryInterface;
 
 class StorageServiceProvider extends ServiceProvider
 {

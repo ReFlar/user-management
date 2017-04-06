@@ -14,22 +14,21 @@ namespace Reflar\UserManagement\Commands;
 
 use Flarum\Core\Access\AssertPermissionTrait;
 use Flarum\Core\Discussion;
+use Flarum\Core\Post\CommentPost;
 use Flarum\Core\Repository\DiscussionRepository;
 use Flarum\Core\Repository\PostRepository;
 use Flarum\Core\Repository\UserRepository;
 use Flarum\Core\Support\DispatchEventsTrait;
 use Flarum\Core\User;
-use Flarum\Core\Post\CommentPost;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Reflar\UserManagement\Events\UserGivenStrike;
 use Reflar\UserManagement\Events\UserWillBeGivenStrike;
-use Reflar\UserManagement\Validators\StrikeValidator;
 use Reflar\UserManagement\Repository\StrikeRepository;
+use Reflar\UserManagement\Validators\StrikeValidator;
 
 class ServeStrikeHandler
 {
-
     use DispatchEventsTrait;
     use AssertPermissionTrait;
 
@@ -59,17 +58,18 @@ class ServeStrikeHandler
         StrikeValidator $validator,
         StrikeRepository $strikes
     ) {
-        $this->events         = $events;
-        $this->users          = $users;
-        $this->posts          = $posts;
-        $this->discussions    = $discussions;
-        $this->settings       = $settings;
-        $this->validator      = $validator;
-        $this->strikes        = $strikes;
+        $this->events = $events;
+        $this->users = $users;
+        $this->posts = $posts;
+        $this->discussions = $discussions;
+        $this->settings = $settings;
+        $this->validator = $validator;
+        $this->strikes = $strikes;
     }
 
     /**
      * @param ServeStrike $command
+     *
      * @return \Flarum\Core\Discussion
      */
     public function handle(ServeStrike $command)
@@ -77,27 +77,25 @@ class ServeStrikeHandler
         $this->assertCan($command->actor, 'discussion.strike');
 
         $this->validator->assertValid([
-            'post_id' => $command->post_id
+            'post_id' => $command->post_id,
         ]);
-      
+
         $post = $this->posts->findOrFail($command->post_id, $command->actor);
-      
+
         $user = $this->users->findOrFail($post->user_id, $command->actor);
-      
+
         $content = $post->content;
-      
+
         $this->events->fire(
             new UserWillBeGivenStrike($post, $user, $command->actor, $command->reason)
         );
         $strike = $this->strikes->serveStrike($post, $user, $command->actor->id, $command->reason);
-        
-        if ($post instanceof CommentPost)
-        {
-            if ($post->number == 1)
-            {
-              $discussion = $this->discussions->findOrFail($post->discussion_id, $comamnd->actor);
-              $discussion->hide_time = date( 'Y-m-d H:i:s');
-              $discussion->save();
+
+        if ($post instanceof CommentPost) {
+            if ($post->number == 1) {
+                $discussion = $this->discussions->findOrFail($post->discussion_id, $comamnd->actor);
+                $discussion->hide_time = date('Y-m-d H:i:s');
+                $discussion->save();
             }
 
             $post->hide();

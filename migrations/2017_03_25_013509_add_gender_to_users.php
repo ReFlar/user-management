@@ -23,10 +23,10 @@ return [
         });
     },
   'down' => function (Builder $schema) {
-        $schema->table('users', function (Blueprint $table) {
-            $table->dropColumn('gender');
-            $table->dropColumn('age');
-            $table->dropColumn('strikes');
-        });
-      } 
+      $schema->table('users', function (Blueprint $table) {
+          $table->dropColumn('gender');
+          $table->dropColumn('age');
+          $table->dropColumn('strikes');
+      });
+  },
   ];

@@ -16,7 +16,6 @@ use Flarum\Api\Serializer\AbstractSerializer;
 
 class StrikeSerializer extends AbstractSerializer
 {
-
     protected $type = 'strikes';
 
     protected function getDefaultAttributes($strike)
@@ -28,7 +27,7 @@ class StrikeSerializer extends AbstractSerializer
             'reason'  => $strike->reason,
             'actor'   => $strike->actor_id,
             'content' => $strike->post_content,
-            'time'    => $strike->time
+            'time'    => $strike->time,
         ];
     }
 }

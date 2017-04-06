@@ -15,7 +15,7 @@ namespace Reflar\UserManagement\Commands;
 use Flarum\Core\User;
 
 class Attributes
-{  
+{
     /**
      * @var array
      */
@@ -32,7 +32,7 @@ class Attributes
      */
     public function __construct(array $body, User $actor)
     {
-        $this->body      = $body;
-        $this->actor     = $actor;
+        $this->body = $body;
+        $this->actor = $actor;
     }
 }
