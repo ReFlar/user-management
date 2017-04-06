@@ -15,7 +15,7 @@ namespace Reflar\UserManagement\Commands;
 use Flarum\Core\User;
 
 class ServeStrike
-{  
+{
     /**.
      * @var integer
      */
@@ -32,15 +32,14 @@ class ServeStrike
     public $actor;
 
     /**
-     * @param integer  $post_id
-     * @param string   $reason
-     * @param User     $actor
+     * @param int    $post_id
+     * @param string $reason
+     * @param User   $actor
      */
     public function __construct($post_id, $reason, User $actor)
     {
-        $this->post_id   = $post_id;
-        $this->reason    = $reason;
-        $this->actor     = $actor;
-
+        $this->post_id = $post_id;
+        $this->reason = $reason;
+        $this->actor = $actor;
     }
 }

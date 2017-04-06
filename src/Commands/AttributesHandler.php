@@ -12,21 +12,21 @@
 
 namespace Reflar\UserManagement\Commands;
 
-use Flarum\Core\Exception\PermissionDeniedException;
 use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Core\Exception\PermissionDeniedException;
 use Flarum\Core\Repository\UserRepository;
 use Flarum\Core\User;
 use Reflar\UserManagement\Validators\AgeGenderValidator;
 
 class AttributesHandler
-{ 
-   use AssertPermissionTrait;
-  
+{
+    use AssertPermissionTrait;
+
     /**
      * @var UserRepository
      */
     protected $users;
-  
+
     /**
      * @var AgeGenderValidator
      */
@@ -44,29 +44,27 @@ class AttributesHandler
     public function handle(Attributes $command)
     {
         $body = $command->body;
-      
-        if (array_get($body, 'gender') != "") {
-          
-          
-          $this->validator->assertValid($body);
-          
-          $user = $command->actor;
-          
-          if (! $user || ! $user->checkPassword(array_get($body, 'password'))) {
-            throw new PermissionDeniedException;
-          }
-          
-          $user->gender = array_get($body, 'gender');
-          $user->age = array_get($body, 'age');
-            
+
+        if (array_get($body, 'gender') != '') {
+            $this->validator->assertValid($body);
+
+            $user = $command->actor;
+
+            if (!$user || !$user->checkPassword(array_get($body, 'password'))) {
+                throw new PermissionDeniedException();
+            }
+
+            $user->gender = array_get($body, 'gender');
+            $user->age = array_get($body, 'age');
         } else {
-          $this->assertCan($command->actor, 'user.activate');
-          
-          $user = $this->users->findByIdentification(array_get($body, 'username'), $command->actor);
-          $user->activate();
+            $this->assertCan($command->actor, 'user.activate');
+
+            $user = $this->users->findByIdentification(array_get($body, 'username'), $command->actor);
+            $user->activate();
         }
-      
-       $user->save();
-       return true;
+
+        $user->save();
+
+        return true;
     }
 }

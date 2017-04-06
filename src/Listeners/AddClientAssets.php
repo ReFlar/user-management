@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * This file is part of reflar/user-management.
  *
@@ -12,40 +13,42 @@
 
 namespace Reflar\UserManagement\Listeners;
 
-use Illuminate\Contracts\Events\Dispatcher;
 use DirectoryIterator;
 use Flarum\Event\ConfigureClientView;
 use Flarum\Event\ConfigureLocales;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class AddClientAssets
-{    
-    public function subscribe(Dispatcher $events) {
+{
+    public function subscribe(Dispatcher $events)
+    {
         $events->listen(ConfigureClientView::class, [$this, 'configureClientView']);
         $events->listen(ConfigureLocales::class, [$this, 'configLocales']);
     }
-    
-    public function configureClientView(ConfigureClientView $event) {
+
+    public function configureClientView(ConfigureClientView $event)
+    {
         if ($event->isAdmin()) {
             $event->addAssets([
               __DIR__.'/../../js/admin/dist/extension.js',
-              __DIR__.'/../../less/admin/extension.less'
+              __DIR__.'/../../less/admin/extension.less',
               ]);
             $event->addBootstrapper('Reflar/UserManagement/main');
         }
         if ($event->isForum()) {
-              $event->addAssets([
+            $event->addAssets([
                   __DIR__.'/../../js/forum/dist/extension.js',
-                  __DIR__.'/../../less/forum/extension.less'
+                  __DIR__.'/../../less/forum/extension.less',
               ]);
-              $event->addBootstrapper('Reflar/UserManagement/main');
-          }
+            $event->addBootstrapper('Reflar/UserManagement/main');
+        }
     }
-  
-   public function configLocales(ConfigureLocales $event)
+
+    public function configLocales(ConfigureLocales $event)
     {
-        foreach (new DirectoryIterator(__DIR__ .'/../../locale') as $file) {
+        foreach (new DirectoryIterator(__DIR__.'/../../locale') as $file) {
             if ($file->isFile() && in_array($file->getExtension(), ['yml', 'yaml'], false)) {
-                $event->locales->addTranslations($file->getBasename('.' . $file->getExtension()), $file->getPathname());
+                $event->locales->addTranslations($file->getBasename('.'.$file->getExtension()), $file->getPathname());
             }
         }
     }

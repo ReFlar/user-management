@@ -16,7 +16,6 @@ use Flarum\Http\Rememberer;
 use Flarum\Http\SessionAuthenticator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\Diactoros\Response\JsonResponse;
-use Reflar\UserManagement\Api\Controllers\CreateUserController;
 
 class RegisterController implements ControllerInterface
 {
@@ -32,10 +31,11 @@ class RegisterController implements ControllerInterface
      * @var Rememberer
      */
     protected $rememberer;
+
     /**
-     * @param Client $api
+     * @param Client               $api
      * @param SessionAuthenticator $authenticator
-     * @param Rememberer $rememberer
+     * @param Rememberer           $rememberer
      */
     public function __construct(Client $api, SessionAuthenticator $authenticator, Rememberer $rememberer)
     {
@@ -43,8 +43,10 @@ class RegisterController implements ControllerInterface
         $this->authenticator = $authenticator;
         $this->rememberer = $rememberer;
     }
+
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function handle(Request $request)
@@ -60,6 +62,7 @@ class RegisterController implements ControllerInterface
             $this->authenticator->logIn($session, $userId);
             $response = $this->rememberer->rememberUser($response, $userId);
         }
+
         return $response;
     }
 }
