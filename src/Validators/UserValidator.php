@@ -61,7 +61,7 @@ class UserValidator extends AbstractValidator
           ];
 
         $this->settings = app()->make(SettingsRepositoryInterface::class);
-      
+
         if ($this->settings->get('ReFlar-emailRegEnabled') == false) {
             $validator['email'] = ['required', 'email', 'unique:users,email'.$idSuffix];
         }
