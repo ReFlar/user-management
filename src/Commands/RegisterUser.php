@@ -39,7 +39,7 @@ class RegisterUser
     {
         if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-recaptcha') == true) {
             app()->make(RecaptchaValidator::class)->assertValid([
-                'g-recaptcha-response' => array_get($data, 'attributes.g-recaptcha-response')
+                'g-recaptcha-response' => array_get($data, 'attributes.g-recaptcha-response'),
             ]);
         }
         $this->actor = $actor;

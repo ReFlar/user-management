@@ -104,9 +104,8 @@ class RegisterUserHandler
         $age = array_get($data, 'attributes.age');
         $gender = ucfirst(strtolower(array_get($data, 'attributes.gender')));
 
-      
         if ($this->settings->get('ReFlar-emailRegEnabled') == true) {
-            $email = $username . '@' . $username . '.com';
+            $email = $username.'@'.$username.'.com';
         }
         // If a valid authentication token was provided as an attribute,
         // then we won't require the user to choose a password.
