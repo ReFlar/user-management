@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * This file is part of reflar/user-management.
  *
@@ -12,35 +13,36 @@
 
 namespace Reflar\UserManagement\Api\Controllers;
 
-use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
-use Reflar\UserManagement\Commands\DeleteStrike;
-use Reflar\UserManagement\Commands\ServeStrike;
 use Flarum\Api\Controller\AbstractResourceController;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
+use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
+use Reflar\UserManagement\Commands\DeleteStrike;
+use Reflar\UserManagement\Commands\ServeStrike;
 use Tobscure\JsonApi\Document;
-use Zend\Diactoros\UploadedFile;
 
 class ServeStrikeController extends AbstractResourceController
 {
     public $serializer = StrikeSerializer::class;
     protected $bus;
+
     public function __construct(Dispatcher $bus)
     {
         $this->bus = $bus;
     }
- 
+
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = $request->getAttribute('actor');
         $id = array_get($request->getParsedBody(), 'id');
         if (isset($id)) {
-          return $this->bus->dispatch(
+            return $this->bus->dispatch(
                 new DeleteStrike($id, $actor)
             );
         } else {
             $post_id = array_get($request->getParsedBody(), 'post_id');
             $reason = array_get($request->getParsedBody(), 'reason');
+
             return $this->bus->dispatch(
                 new ServeStrike($post_id, $reason, $actor)
             );
