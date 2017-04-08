@@ -13,6 +13,7 @@ namespace Reflar\UserManagement\Validators;
 use Flarum\Core\User;
 use Flarum\Core\Validator\AbstractValidator;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class UserValidator extends AbstractValidator
 {
@@ -42,7 +43,9 @@ class UserValidator extends AbstractValidator
      */
     protected function getRules()
     {
+        $this->translator = app()->make(TranslatorInterface::class);
         $idSuffix = $this->user ? ','.$this->user->id : '';
+        $genders = $this->translator->trans('reflar-usermanagement.forum.signup.male').','.$this->translator->trans('reflar-usermanagement.forum.signup.female').','.$this->translator->trans('reflar-usermanagement.forum.signup.other');
         $validator = [
               'username' => [
                   'required',
@@ -57,16 +60,18 @@ class UserValidator extends AbstractValidator
               ],
           ];
 
-        if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-emailRegEnabled') == false) {
+        $this->settings = app()->make(SettingsRepositoryInterface::class);
+      
+        if ($this->settings->get('ReFlar-emailRegEnabled') == false) {
             $validator['email'] = ['required', 'email', 'unique:users,email'.$idSuffix];
         }
 
-        if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-ageRegEnabled') == true) {
+        if ($this->settings->get('ReFlar-ageRegEnabled') == true) {
             $validator['age'] = ['required', 'integer', 'max:100'];
         }
 
-        if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-genderRegEnabled') == true) {
-            $validator['gender'] = ['required', 'string', 'in:Male,Female,Other'];
+        if ($this->settings->get('ReFlar-genderRegEnabled') == true) {
+            $validator['gender'] = ['required', 'string', 'in:'.$genders];
         }
 
         return $validator;

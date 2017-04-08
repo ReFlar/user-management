@@ -83,7 +83,7 @@ System.register('Reflar/UserManagement/components/AgeGenderModal', ['flarum/comp
         }, {
           key: 'title',
           value: function title() {
-            return app.translator.trans('reflar-usermanagement.forum.account.modal.title');
+            return app.translator.trans('reflar-usermanagement.forum.user.settings.title');
           }
         }, {
           key: 'content',
@@ -161,7 +161,7 @@ System.register('Reflar/UserManagement/components/AgeGenderModal', ['flarum/comp
                   m(
                     Button,
                     { className: 'Button Button--primary', loading: this.loading, type: 'submit' },
-                    app.translator.trans('reflar-usermanagement.forum.account.modal.submit_button')
+                    app.translator.trans('reflar-usermanagement.forum.user.settings.save')
                   )
                 )
               )
@@ -186,7 +186,7 @@ System.register('Reflar/UserManagement/components/AgeGenderModal', ['flarum/comp
         }, {
           key: 'success',
           value: function success(response) {
-            app.alerts.show(this.successAlert = new Alert({ type: 'success', children: app.translator.trans('reflar-usermanagement.forum.account.modal.submit_success') }));
+            app.alerts.show(this.successAlert = new Alert({ type: 'success', children: app.translator.trans('reflar-usermanagement.forum.user.settings.success') }));
             app.modal.close();
           }
         }, {
@@ -267,7 +267,8 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
         }, {
           key: 'title',
           value: function title() {
-            return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', { user: this.user.username });
+            var username = this.user.data.attributes.username;
+            return app.translator.trans('reflar-usermanagement.forum.user.controls.modal', { username: username });
           }
         }, {
           key: 'content',
@@ -340,7 +341,7 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                 }, {
                     key: 'className',
                     value: function className() {
-                        return 'StrikeModal Modal--small';
+                        return 'StrikeModal Modal';
                     }
                 }, {
                     key: 'title',
@@ -351,8 +352,9 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                     key: 'content',
                     value: function content() {
 
-                        return [m('div', { className: 'Modal-body' }, [m('div', { className: 'Form Form--centered' }, [m('div', { className: 'Form-group' }, [m('label', {}, app.translator.trans('reflar-usermanagement.forum.modal.post.strike_reason')), m('input', {
-                            name: 'strike_reason',
+                        return [m('div', { className: 'Modal-body' }, [m('div', { className: 'Form' }, [m('div', { className: 'Form-group' }, [m('label', {}, app.translator.trans('reflar-usermanagement.forum.modal.post.strike_reason')), m('textarea', {
+                            rows: '3',
+                            className: 'FormControl',
                             placeholder: app.translator.trans('reflar-usermanagement.forum.modal.post.reason_placeholder'),
                             oninput: m.withAttr('value', this.reason)
                         })]), m('div', { className: 'Form-group' }, [m(Button, {
@@ -436,15 +438,16 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
         User.prototype.gender = Model.attribute('gender');
         User.prototype.age = Model.attribute('age');
 
-        extend(UserCard.prototype, 'infoItems', function (items, user) {
+        extend(UserCard.prototype, 'infoItems', function (items) {
+          var age = this.props.user.data.attributes['age'];
           items.add('gender', this.props.user.data.attributes.gender);
-          items.add('age', app.translator.trans('reflar-usermanagement.forum.user.age').replace('{age}', this.props.user.data.attributes['age']));
+          items.add('age', app.translator.trans('reflar-usermanagement.forum.user.age', { age: age }));
         });
 
         extend(UserControls, 'moderationControls', function (items, user) {
           if (user.canViewStrike()) {
             items.add('strikes', Button.component({
-              children: app.translator.trans('reflar-usermanagement.forum.user_controls.strike_button'),
+              children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
               icon: 'times',
               onclick: function onclick() {
                 app.modal.show(new ModStrikeModal({ user: user }));
@@ -454,7 +457,7 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
           }
           if ({ user: user }.user.data.attributes.isActivated == 0 && user.canActivate()) {
             items.add('approve', Button.component({
-              children: app.translator.trans('reflar-usermanagement.forum.user_controls.activate_button'),
+              children: app.translator.trans('reflar-usermanagement.forum.user.controls.activate_button'),
               icon: 'check',
               onclick: function onclick() {
                 app.request({
@@ -512,35 +515,15 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
             app.forum.data.attributes['ReFlar-genderRegEnabled'] != 1 ? '' : m(
               'div',
               { className: 'Form-group' },
-              m(
-                'select',
-                { className: 'FormControl', onchange: m.withAttr('value', this.gender) },
-                m(
-                  'option',
-                  { value: '', disabled: true, selected: true },
-                  app.translator.trans('reflar-usermanagement.forum.signup.gender')
-                ),
-                m(
-                  'option',
-                  { value: 'Male' },
-                  app.translator.trans('reflar-usermanagement.forum.signup.male')
-                ),
-                m(
-                  'option',
-                  { value: 'Female' },
-                  app.translator.trans('reflar-usermanagement.forum.signup.female')
-                ),
-                m(
-                  'option',
-                  { value: 'Other' },
-                  app.translator.trans('reflar-usermanagement.forum.signup.other')
-                )
-              )
+              m('input', { className: 'FormControl Reflar-RegValue', name: 'gender', type: 'text', placeholder: extractText(app.translator.trans('reflar-usermanagement.forum.signup.gender')),
+                value: this.gender(),
+                onchange: m.withAttr('value', this.gender),
+                disabled: this.loading })
             ),
             app.forum.data.attributes['ReFlar-ageRegEnabled'] != 1 ? '' : m(
               'div',
               { className: 'Form-group' },
-              m('input', { className: 'FormControl', name: 'age', type: 'number', placeholder: extractText(app.translator.trans('reflar-usermanagement.forum.signup.age')),
+              m('input', { className: 'FormControl Reflar-RegValue', name: 'age', type: 'number', placeholder: extractText(app.translator.trans('reflar-usermanagement.forum.signup.age')),
                 value: this.age(),
                 onchange: m.withAttr('value', this.age),
                 disabled: this.loading })
@@ -581,7 +564,7 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
             className: "Button",
             onclick: function onclick() {
               app.modal.show(new AgeGenderModal({ user: user }));
-            } }, [app.translator.trans('reflar-usermanagement.forum.user.settings')]));
+            } }, [app.translator.trans('reflar-usermanagement.forum.user.settings.button')]));
         });
 
         extend(SignUpModal.prototype, 'submitData', function (data) {

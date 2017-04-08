@@ -15,7 +15,7 @@ export default class StrikeModal extends Modal {
     }
 
     className() {
-        return 'StrikeModal Modal--small';
+        return 'StrikeModal Modal';
     }
 
     title() {
@@ -26,11 +26,12 @@ export default class StrikeModal extends Modal {
 
         return [
             m('div', {className: 'Modal-body'}, [
-                m('div', {className: 'Form Form--centered'}, [
+                m('div', {className: 'Form'}, [
                     m('div', {className: 'Form-group'}, [
                         m('label', {},  app.translator.trans('reflar-usermanagement.forum.modal.post.strike_reason')),
-                        m('input', {
-                            name: 'strike_reason',
+                        m('textarea', {
+                            rows: '3',
+                            className: 'FormControl',
                             placeholder: app.translator.trans('reflar-usermanagement.forum.modal.post.reason_placeholder'),
                             oninput: m.withAttr('value', this.reason)
                         })

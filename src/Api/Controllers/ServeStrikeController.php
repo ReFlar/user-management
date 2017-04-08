@@ -34,7 +34,7 @@ class ServeStrikeController extends AbstractResourceController
     {
         $actor = $request->getAttribute('actor');
         $id = array_get($request->getParsedBody(), 'id');
-        if (isset($id) {
+        if (isset($id)) {
           return $this->bus->dispatch(
                 new DeleteStrike($id, $actor)
             );

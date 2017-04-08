@@ -20,8 +20,8 @@ class AgeGenderValidator extends AbstractValidator
      */
     protected function getRules()
     {
-        $translator = app()->make(TranslatorInterface::class);
-        $genders = $translator->trans('reflar-usermanagement.forum.signup.male').','.$translator->trans('reflar-usermanagement.forum.signup.female').','.$translator->trans('reflar-usermanagement.forum.signup.other');
+        $this->translator = app()->make(TranslatorInterface::class);
+        $genders = $this->translator->trans('reflar-usermanagement.forum.signup.male').','.$this->translator->trans('reflar-usermanagement.forum.signup.female').','.$this->translator->trans('reflar-usermanagement.forum.signup.other');
 
         return [
               'age' => [

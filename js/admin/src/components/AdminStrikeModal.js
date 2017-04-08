@@ -31,11 +31,12 @@ export default class AdminStrikeModal extends Modal {
   }
 
   className() {
-    return 'ModStrikeModal Modal';
+    return 'AdminStrikeModal Modal';
   }
 
   title() {
-    return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', {user: this.user.username});
+    var username = this.user.data.attributes.username;
+    return app.translator.trans('reflar-usermanagement.admin.modal.view.title', {username});
   }
 
   content() {
@@ -43,15 +44,15 @@ export default class AdminStrikeModal extends Modal {
       m('div', {className: 'Modal-body'}, [
           m('div', {className: 'Form Form--centered'}, [
              FieldSet.component({
-               className: 'ModStrikeModal--fieldset',
+               className: 'AdminStrikeModal--fieldset',
                 children: [
                   (this.flatstrikes !== undefined ? 
-                  m('table', {className: "NotificationGrid"}, [m('thead', [m('tr', [m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.number')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.content')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.time')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]),m('tbody',[
+                  m('table', {className: "NotificationGrid"}, [m('thead', [m('tr', [m('td',[app.translator.trans('reflar-usermanagement.admin.modal.view.number')]),m('td',[app.translator.trans('reflar-usermanagement.admin.modal.view.content')]),m('td',[app.translator.trans('reflar-usermanagement.admin.modal.view.actor')]),m('td',[app.translator.trans('reflar-usermanagement.admin.modal.view.time')]),m('td',[app.translator.trans('reflar-usermanagement.admin.modal.view.remove')])])]),m('tbody',[
                     this.flatstrikes.map((strike) => {
                       return [
-                        m('tr', [m('td',[strike['index']]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post']},[app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor']},[strike['actor']])]),m('td',[humanTime(strike['time'])]),m('td',[m('a', {className: "icon fa fa-fw fa-times", onclick: ()=>{this.deleteStrike(strike['id'])}})])])
+                        m('tr', [m('td',[strike['index']]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post']},[app.translator.trans('reflar-usermanagement.admin.modal.view.link')])]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor']},[strike['actor']])]),m('td',[humanTime(strike['time'])]),m('td',[m('a', {className: "icon fa fa-fw fa-times", onclick: ()=>{this.deleteStrike(strike['id'])}})])])
                       ]})])])
-                       : m('tr', [m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])),
+                       : m('tr', [m('td',[app.translator.trans('reflar-usermanagement.admin.modal.view.no_strikes')])])),
                   ]})
                   ]
               )]

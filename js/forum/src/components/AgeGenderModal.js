@@ -17,7 +17,7 @@ export default class AgeGenderModal extends Modal {
   }
 
   title() {
-    return app.translator.trans('reflar-usermanagement.forum.account.modal.title');
+    return app.translator.trans('reflar-usermanagement.forum.user.settings.title');
   }
 
   content() {
@@ -67,7 +67,7 @@ export default class AgeGenderModal extends Modal {
           </div>
           <div className="Form-group">
             <Button className="Button Button--primary" loading={this.loading} type="submit">
-              {app.translator.trans('reflar-usermanagement.forum.account.modal.submit_button')}
+              {app.translator.trans('reflar-usermanagement.forum.user.settings.save')}
             </Button>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default class AgeGenderModal extends Modal {
   }
 
   success(response) {
-    app.alerts.show(this.successAlert = new Alert({type: 'success', children: app.translator.trans('reflar-usermanagement.forum.account.modal.submit_success')}));
+    app.alerts.show(this.successAlert = new Alert({type: 'success', children: app.translator.trans('reflar-usermanagement.forum.user.settings.success')}));
     app.modal.close();
   }
 

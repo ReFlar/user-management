@@ -12,6 +12,8 @@
 namespace Reflar\UserManagement\Commands;
 
 use Flarum\Core\User;
+use Flarum\Settings\SettingsRepositoryInterface;
+use Sijad\ReCaptcha\RecaptchaValidator;
 
 class RegisterUser
 {
@@ -35,6 +37,11 @@ class RegisterUser
      */
     public function __construct(User $actor, array $data)
     {
+        if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-recaptcha') == true) {
+            app()->make(RecaptchaValidator::class)->assertValid([
+                'g-recaptcha-response' => array_get($data, 'attributes.g-recaptcha-response')
+            ]);
+        }
         $this->actor = $actor;
         $this->data = $data;
     }

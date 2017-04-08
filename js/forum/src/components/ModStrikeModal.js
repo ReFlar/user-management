@@ -10,6 +10,7 @@ export default class ModStrikeModal extends Modal {
     this.user = this.props.user;
     
     
+    
     app.request({
           method: 'GET',
           url: app.forum.attribute('apiUrl') + '/strike/'+this.user.data.id,
@@ -35,7 +36,8 @@ export default class ModStrikeModal extends Modal {
   }
 
   title() {
-    return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title').replace('{user}', this.user.username);
+    var username = this.user.data.attributes.username;
+    return app.translator.trans('reflar-usermanagement.forum.user.controls.modal', {username});
   }
   
   content() {

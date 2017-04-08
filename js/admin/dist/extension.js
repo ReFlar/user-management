@@ -92,12 +92,13 @@ System.register('Reflar/UserManagement/components/AdminStrikeModal', ['flarum/co
         }, {
           key: 'className',
           value: function className() {
-            return 'ModStrikeModal Modal';
+            return 'AdminStrikeModal Modal';
           }
         }, {
           key: 'title',
           value: function title() {
-            return app.translator.trans('reflar-usermanagement.forum.user_controls.modal.title', { user: this.user.username });
+            var username = this.user.data.attributes.username;
+            return app.translator.trans('reflar-usermanagement.admin.modal.view.title', { username: username });
           }
         }, {
           key: 'content',
@@ -105,12 +106,12 @@ System.register('Reflar/UserManagement/components/AdminStrikeModal', ['flarum/co
             var _this3 = this;
 
             return m('div', { className: 'Modal-body' }, [m('div', { className: 'Form Form--centered' }, [FieldSet.component({
-              className: 'ModStrikeModal--fieldset',
-              children: [this.flatstrikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
-                return [m('tr', [m('td', [strike['index']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
+              className: 'AdminStrikeModal--fieldset',
+              children: [this.flatstrikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.admin.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.admin.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.admin.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.admin.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.admin.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
+                return [m('tr', [m('td', [strike['index']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.admin.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
                     _this3.deleteStrike(strike['id']);
                   } })])])];
-              })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
+              })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.admin.modal.view.no_strikes')])])] })])]);
           }
         }, {
           key: 'deleteStrike',
@@ -292,4 +293,128 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
             _export('default', MemberPage);
         }
     };
+});;
+'use strict';
+
+System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum/app', 'flarum/extend', 'flarum/components/SettingsModal', 'flarum/components/Switch'], function (_export, _context) {
+  "use strict";
+
+  var app, extend, SettingsModal, Switch, MemberSettingsModal;
+  return {
+    setters: [function (_flarumApp) {
+      app = _flarumApp.default;
+    }, function (_flarumExtend) {
+      extend = _flarumExtend.extend;
+    }, function (_flarumComponentsSettingsModal) {
+      SettingsModal = _flarumComponentsSettingsModal.default;
+    }, function (_flarumComponentsSwitch) {
+      Switch = _flarumComponentsSwitch.default;
+    }],
+    execute: function () {
+      MemberSettingsModal = function (_SettingsModal) {
+        babelHelpers.inherits(MemberSettingsModal, _SettingsModal);
+
+        function MemberSettingsModal() {
+          babelHelpers.classCallCheck(this, MemberSettingsModal);
+          return babelHelpers.possibleConstructorReturn(this, (MemberSettingsModal.__proto__ || Object.getPrototypeOf(MemberSettingsModal)).apply(this, arguments));
+        }
+
+        babelHelpers.createClass(MemberSettingsModal, [{
+          key: 'className',
+          value: function className() {
+            return 'SettingsModal Modal--small';
+          }
+        }, {
+          key: 'title',
+          value: function title() {
+            return app.translator.trans('reflar-usermanagement.admin.modal.settings_title');
+          }
+        }, {
+          key: 'form',
+          value: function form() {
+            return [m(
+              'div',
+              { className: 'Form-group' },
+              Switch.component({
+                className: "SettingsModal-switch",
+                state: this.setting('ReFlar-emailRegEnabled')(),
+                children: app.translator.trans('reflar-usermanagement.admin.modal.email_switch'),
+                onchange: this.setting('ReFlar-emailRegEnabled')
+              }),
+              Switch.component({
+                className: "SettingsModal-switch",
+                state: this.setting('ReFlar-genderRegEnabled')(),
+                children: app.translator.trans('reflar-usermanagement.admin.modal.gender_label'),
+                onchange: this.setting('ReFlar-genderRegEnabled')
+              }),
+              Switch.component({
+                className: "SettingsModal-switch",
+                state: this.setting('ReFlar-ageRegEnabled')(),
+                children: app.translator.trans('reflar-usermanagement.admin.modal.age_label'),
+                onchange: this.setting('ReFlar-ageRegEnabled')
+              }),
+              Switch.component({
+                className: "SettingsModal-switch",
+                state: this.setting('ReFlar-recaptcha')(),
+                children: app.translator.trans('reflar-usermanagement.admin.modal.recaptcha'),
+                onchange: this.setting('ReFlar-recaptcha')
+              })
+            ), m(
+              'div',
+              { className: 'Form-group' },
+              m(
+                'label',
+                null,
+                app.translator.trans('reflar-usermanagement.admin.modal.amount_label')
+              ),
+              m('input', { className: 'FormControl', type: 'number', bidi: this.setting('ReFlar-amountPerPage') })
+            )];
+          }
+        }]);
+        return MemberSettingsModal;
+      }(SettingsModal);
+
+      _export('default', MemberSettingsModal);
+    }
+  };
+});;
+'use strict';
+
+System.register('Reflar/UserManagement/main', ['flarum/extend', 'Reflar/UserManagement/addMembersListPane', 'flarum/components/PermissionGrid'], function (_export, _context) {
+  "use strict";
+
+  var extend, addMembersListPane, PermissionGrid;
+  return {
+    setters: [function (_flarumExtend) {
+      extend = _flarumExtend.extend;
+    }, function (_ReflarUserManagementAddMembersListPane) {
+      addMembersListPane = _ReflarUserManagementAddMembersListPane.default;
+    }, function (_flarumComponentsPermissionGrid) {
+      PermissionGrid = _flarumComponentsPermissionGrid.default;
+    }],
+    execute: function () {
+
+      app.initializers.add('Reflar-User-Management', function (app) {
+        addMembersListPane();
+
+        extend(PermissionGrid.prototype, 'moderateItems', function (items) {
+          items.add('activate', {
+            icon: 'address-card-o',
+            label: app.translator.trans('Reflar-registration.admin.activate_perm_item'),
+            permission: 'user.activate'
+          });
+          items.add('strike', {
+            icon: 'times',
+            label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
+            permission: 'discussion.strike'
+          });
+          items.add('viewStrikes', {
+            icon: 'times',
+            label: app.translator.trans('Reflar-registration.admin.viewstrike_perm_item'),
+            permission: 'user.strike'
+          });
+        });
+      });
+    }
+  };
 });

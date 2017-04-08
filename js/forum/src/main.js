@@ -24,19 +24,20 @@ app.initializers.add('Reflar-User-Management', function(app) {
     User.prototype.gender = Model.attribute('gender');
     User.prototype.age = Model.attribute('age');
 
-    extend(UserCard.prototype, 'infoItems', function(items, user) {
+    extend(UserCard.prototype, 'infoItems', function(items) {
+      var age = this.props.user.data.attributes['age'];
       items.add('gender',
         this.props.user.data.attributes.gender
       );
       items.add('age',
-        app.translator.trans('reflar-usermanagement.forum.user.age').replace('{age}', this.props.user.data.attributes['age'])
+        app.translator.trans('reflar-usermanagement.forum.user.age', {age})
       );
     });
   
     extend(UserControls, 'moderationControls', function(items, user) {
     if (user.canViewStrike()) {
       items.add('strikes', Button.component({
-        children: app.translator.trans('reflar-usermanagement.forum.user_controls.strike_button'),
+        children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
         icon: 'times',
         onclick: function() {
           app.modal.show(new ModStrikeModal({user}));
@@ -46,7 +47,7 @@ app.initializers.add('Reflar-User-Management', function(app) {
     }
       if ({user}.user.data.attributes.isActivated == 0 && user.canActivate()) {
        items.add('approve', Button.component({
-        children: app.translator.trans('reflar-usermanagement.forum.user_controls.activate_button'),
+        children: app.translator.trans('reflar-usermanagement.forum.user.controls.activate_button'),
         icon: 'check',
         onclick: function() {
           app.request({
@@ -103,17 +104,15 @@ app.initializers.add('Reflar-User-Management', function(app) {
         )}
         {app.forum.data.attributes['ReFlar-genderRegEnabled'] != 1 ? '' : ( 
         <div className="Form-group">
-          <select className="FormControl" onchange={m.withAttr('value', this.gender)}>
-            <option value="" disabled selected>{app.translator.trans('reflar-usermanagement.forum.signup.gender')}</option>
-            <option value="Male">{app.translator.trans('reflar-usermanagement.forum.signup.male')}</option>
-            <option value="Female">{app.translator.trans('reflar-usermanagement.forum.signup.female')}</option>
-            <option value="Other">{app.translator.trans('reflar-usermanagement.forum.signup.other')}</option>
-          </select>
-        </div>
+          <input className="FormControl Reflar-RegValue" name="gender" type="text" placeholder={extractText(app.translator.trans('reflar-usermanagement.forum.signup.gender'))}
+              value={this.gender()}
+              onchange={m.withAttr('value', this.gender)}
+              disabled={this.loading} />
+          </div>
         )}
         {app.forum.data.attributes['ReFlar-ageRegEnabled'] != 1 ? '' : (
         <div className="Form-group">
-            <input className="FormControl" name="age" type="number" placeholder={extractText(app.translator.trans('reflar-usermanagement.forum.signup.age'))}
+            <input className="FormControl Reflar-RegValue" name="age" type="number" placeholder={extractText(app.translator.trans('reflar-usermanagement.forum.signup.age'))}
               value={this.age()}
               onchange={m.withAttr('value', this.age)}
               disabled={this.loading} />
@@ -153,7 +152,7 @@ app.initializers.add('Reflar-User-Management', function(app) {
       Button.component({
         className: "Button", 
         onclick: () => {app.modal.show(new AgeGenderModal({user}))}}, 
-        [app.translator.trans('reflar-usermanagement.forum.user.settings')])
+        [app.translator.trans('reflar-usermanagement.forum.user.settings.button')])
     );
   });
         

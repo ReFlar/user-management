@@ -79,9 +79,9 @@ class AddApiAttributes
          if ($event->isSerializer(UserSerializer::class)) {
              $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
              $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
-             $event->attributes['strikes'] = $event->actor->strikes;
-             $event->attributes['gender'] = $event->actor->gender;
-             $event->attributes['age'] = $event->actor->age;
+             $event->attributes['strikes'] = $event->model->strikes;
+             $event->attributes['gender'] = $event->model->gender;
+             $event->attributes['age'] = $event->model->age;
          }
      }
 }
