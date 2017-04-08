@@ -8,17 +8,17 @@ app.initializers.add('Reflar-User-Management', app => {
   extend(PermissionGrid.prototype, 'moderateItems', items => {
     items.add('activate', {
       icon: 'address-card-o',
-      label: app.translator.trans('Reflar-registration.admin.activate_perm_item'),
+      label: app.translator.trans('reflar-usermanagement.admin.activate_perm_item'),
       permission: 'user.activate'
     });
     items.add('strike', {
       icon: 'times',
-      label: app.translator.trans('Reflar-registration.admin.strike_perm_item'),
+      label: app.translator.trans('reflar-usermanagement.admin.strike_perm_item'),
       permission: 'discussion.strike'
     });
     items.add('viewStrikes', {
-      icon: 'times',
-      label: app.translator.trans('Reflar-registration.admin.viewstrike_perm_item'),
+      icon: 'eye',
+      label: app.translator.trans('reflar-usermanagement.admin.viewstrike_perm_item'),
       permission: 'user.strike'
     });
   });

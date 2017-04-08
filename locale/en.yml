@@ -1,5 +1,8 @@
 reflar-usermanagement:
   admin:
+    strike_perm_item: Serve Strikes
+    activate_perm_item: Manually Activate Users
+    viewstrike_perm_item: View User Strikes
     nav:
       title: Member List
       desc: View and manage your users
