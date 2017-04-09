@@ -273,7 +273,11 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
         }, {
           key: 'className',
           value: function className() {
-            return 'ModStrikeModal Modal';
+            if (this.strikes !== undefined) {
+              return 'ModStrikeModal Modal';
+            } else {
+              return 'Modal Modal--small';
+            }
           }
         }, {
           key: 'title',

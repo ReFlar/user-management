@@ -96,7 +96,11 @@ System.register('Reflar/UserManagement/components/AdminStrikeModal', ['flarum/co
         }, {
           key: 'className',
           value: function className() {
-            return 'AdminStrikeModal Modal';
+            if (this.strikes !== undefined) {
+              return 'ModStrikeModal Modal';
+            } else {
+              return 'Modal Modal--small';
+            }
           }
         }, {
           key: 'title',

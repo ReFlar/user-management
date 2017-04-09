@@ -35,7 +35,11 @@ export default class AdminStrikeModal extends Modal {
   }
 
   className() {
-    return 'AdminStrikeModal Modal';
+    if (this.strikes !== undefined) {
+      return 'ModStrikeModal Modal';
+    } else {
+      return 'Modal Modal--small'
+    }
   }
 
   title() {

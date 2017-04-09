@@ -43,7 +43,11 @@ export default class ModStrikeModal extends Modal {
   }
 
   className() {
-    return 'ModStrikeModal Modal';
+    if (this.strikes !== undefined) {
+      return 'ModStrikeModal Modal';
+    } else {
+      return 'NoStrikeModa Modal Modal--small'
+    }
   }
 
   title() {
