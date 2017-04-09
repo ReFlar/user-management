@@ -13,6 +13,7 @@ reflar-usermanagement:
         content: Discusión
         actor: Actor
         time: Fecha
+        reason: Razón
         link: Link
         remove: Eliminar
         title : "Advertencias de {username}"
@@ -49,9 +50,10 @@ reflar-usermanagement:
         strike_button: Ver advertencias
         activate_button: Activar Usuario
         modal: "Advertencias de {username}"
+        previous: "Anterior historial de {username}"
     modal:
       post:
-        title: Dar una advertencia
+        title: Dar una advertencia a: {username}
         reason_placeholder: Motivo de la advertencia
         strike_reason: Motivo
         submit_button: Dar advertencia
@@ -61,6 +63,7 @@ reflar-usermanagement:
         content: Discusión
         actor: Autor
         time: Fecha
+        reason: Razón
         link: Link
         remove: Remover
       

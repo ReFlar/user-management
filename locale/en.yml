@@ -13,6 +13,7 @@ reflar-usermanagement:
         content: Post
         actor: Actor
         time: Time
+        reason: Reason
         link: Link
         remove: remove
         title : "{username}'s Strikes"
@@ -49,9 +50,10 @@ reflar-usermanagement:
         strike_button: View Strikes
         activate_button: Activate User
         modal: "{username}'s Strikes"
+        previous: "{username}'s Previous Record"
     modal:
       post:
-        title: Issue a Strike
+        title: Serve a Strike to: {username}
         reason_placeholder: Reason for strike
         strike_reason: Reason
         submit_button: Serve Strike
@@ -61,5 +63,6 @@ reflar-usermanagement:
         content: Post
         actor: Actor
         time: Time
+        reason: Reason
         link: Link
         remove: remove

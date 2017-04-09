@@ -11,7 +11,6 @@ export default function() {
 
     extend(PostControls, 'moderationControls', function(items, post) {
         const discussion = post.discussion();
-        const id = post.data.attributes.id;
 
         if (!discussion.canStrike()) return;
 
@@ -20,7 +19,7 @@ export default function() {
                 icon: 'times',
                 className: 'refar-usermanagement-strikeButon',
                 onclick: () => {
-                    app.modal.show(new StrikeModal({id}));
+                    app.modal.show(new StrikeModal({post}));
                     
                 }
             }, app.translator.trans('reflar-usermanagement.forum.post_controls.strike_button'))

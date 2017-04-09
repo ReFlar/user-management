@@ -9,7 +9,6 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
 
         extend(PostControls, 'moderationControls', function (items, post) {
             var discussion = post.discussion();
-            var id = post.data.attributes.id;
 
             if (!discussion.canStrike()) return;
 
@@ -17,7 +16,7 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
                 icon: 'times',
                 className: 'refar-usermanagement-strikeButon',
                 onclick: function onclick() {
-                    app.modal.show(new StrikeModal({ id: id }));
+                    app.modal.show(new StrikeModal({ post: post }));
                 }
             }, app.translator.trans('reflar-usermanagement.forum.post_controls.strike_button'))]);
         });
@@ -239,7 +238,15 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
 
             babelHelpers.get(ModStrikeModal.prototype.__proto__ || Object.getPrototypeOf(ModStrikeModal.prototype), 'init', this).call(this);
 
-            this.user = this.props.user;
+            if (this.props.data !== undefined) {
+              this.user = this.props;
+              var username = this.user.data.attributes.username;
+              this.title = m.prop(app.translator.trans('reflar-usermanagement.forum.user.controls.previous', { username: username }));
+            } else {
+              this.user = this.props.user;
+              var username = this.user.data.attributes.username;
+              this.title = m.prop(app.translator.trans('reflar-usermanagement.forum.user.controls.modal', { username: username }));
+            }
 
             app.request({
               method: 'GET',
@@ -252,8 +259,12 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
                 _this2.flatstrikes[i]['index'] = i + 1;
                 _this2.flatstrikes[i]['id'] = _this2.strikes[i].attributes['id'];
                 _this2.flatstrikes[i]['actor'] = _this2.strikes[i].attributes['actor'];
+                _this2.flatstrikes[i]['reason'] = _this2.strikes[i].attributes['reason'];
                 _this2.flatstrikes[i]['post'] = _this2.strikes[i].attributes['post'];
                 _this2.flatstrikes[i]['time'] = new Date(_this2.strikes[i].attributes['time']);
+              }
+              if (_this2.user.data.attributes.strikes == 0) {
+                _this2.strikes = undefined;
               }
               m.redraw();
               _this2.loading = false;
@@ -267,8 +278,7 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
         }, {
           key: 'title',
           value: function title() {
-            var username = this.user.data.attributes.username;
-            return app.translator.trans('reflar-usermanagement.forum.user.controls.modal', { username: username });
+            return this.title;
           }
         }, {
           key: 'content',
@@ -277,8 +287,8 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
 
             return m('div', { className: 'Modal-body' }, [m('div', { className: 'Form Form--centered' }, [FieldSet.component({
               className: 'ModStrikeModal--fieldset',
-              children: [this.flatstrikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
-                return [m('tr', [m('td', [strike['index']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
+              children: [this.strikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.reason')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
+                return [m('tr', [m('td', [strike['index']]), m('td', [strike['reason']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
                     _this3.deleteStrike(strike['id']);
                   } })])])];
               })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
@@ -306,10 +316,10 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/components/Modal', 'flarum/components/Button', 'flarum/models/Discussion'], function (_export, _context) {
+System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/components/Modal', 'flarum/components/Button', 'flarum/models/Discussion', 'Reflar/UserManagement/components/ModStrikeModal'], function (_export, _context) {
     "use strict";
 
-    var Modal, Button, Discussion, StrikeModal;
+    var Modal, Button, Discussion, ModStrikeModal, StrikeModal;
     return {
         setters: [function (_flarumComponentsModal) {
             Modal = _flarumComponentsModal.default;
@@ -317,6 +327,8 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
             Button = _flarumComponentsButton.default;
         }, function (_flarumModelsDiscussion) {
             Discussion = _flarumModelsDiscussion.default;
+        }, function (_ReflarUserManagementComponentsModStrikeModal) {
+            ModStrikeModal = _ReflarUserManagementComponentsModStrikeModal.default;
         }],
         execute: function () {
             StrikeModal = function (_Modal) {
@@ -332,7 +344,9 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                     value: function init() {
                         babelHelpers.get(StrikeModal.prototype.__proto__ || Object.getPrototypeOf(StrikeModal.prototype), 'init', this).call(this);
 
-                        this.post = this.props.id;
+                        this.post = this.props.post;
+
+                        this.user = app.store.getById('users', this.post.data.relationships.user.data.id);
 
                         this.reason = m.prop('');
 
@@ -346,7 +360,8 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                 }, {
                     key: 'title',
                     value: function title() {
-                        return app.translator.trans('reflar-usermanagement.forum.modal.post.title');
+                        var username = this.user.data.attributes.username;
+                        return app.translator.trans('reflar-usermanagement.forum.modal.post.title', { username: username });
                     }
                 }, {
                     key: 'content',
@@ -365,6 +380,11 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                         }, app.translator.trans('reflar-usermanagement.forum.modal.post.submit_button'))])])])];
                     }
                 }, {
+                    key: 'success',
+                    value: function success(response) {
+                        app.modal.show(new ModStrikeModal(this.user));
+                    }
+                }, {
                     key: 'onsubmit',
                     value: function onsubmit(e) {
                         e.preventDefault();
@@ -375,10 +395,10 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                             method: 'POST',
                             url: app.forum.attribute('apiUrl') + '/strike',
                             data: {
-                                "post_id": this.post,
+                                "post_id": this.post.data.attributes.id,
                                 "reason": this.reason()
                             }
-                        }).then(window.location.reload(), this.loaded.bind(this));
+                        }).then(this.success.bind(this), this.loaded.bind(this));
                     }
                 }]);
                 return StrikeModal;

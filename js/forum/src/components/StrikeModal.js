@@ -1,12 +1,15 @@
 import Modal from 'flarum/components/Modal';
 import Button from 'flarum/components/Button';
 import Discussion from 'flarum/models/Discussion';
+import ModStrikeModal from 'Reflar/UserManagement/components/ModStrikeModal';
 
 export default class StrikeModal extends Modal {
     init() {
         super.init();
 
-        this.post = this.props.id;
+        this.post = this.props.post;
+      
+        this.user = app.store.getById('users', this.post.data.relationships.user.data.id);
       
         this.reason = m.prop('');
       
@@ -19,7 +22,8 @@ export default class StrikeModal extends Modal {
     }
 
     title() {
-        return app.translator.trans('reflar-usermanagement.forum.modal.post.title');
+        var username = this.user.data.attributes.username;
+        return app.translator.trans('reflar-usermanagement.forum.modal.post.title', {username});
     }
 
     content() {
@@ -48,6 +52,9 @@ export default class StrikeModal extends Modal {
             ])
         ];
     }
+  success(response) {
+    app.modal.show(new ModStrikeModal(this.user));
+  }
 
     onsubmit(e) {
         e.preventDefault();
@@ -58,11 +65,11 @@ export default class StrikeModal extends Modal {
             method: 'POST',
             url: app.forum.attribute('apiUrl') + '/strike',
             data: {
-            "post_id": this.post,
+            "post_id": this.post.data.attributes.id,
             "reason": this.reason()
             }
-        }).then(window.location.reload(),
-            this.loaded.bind(this)
+        }).then(this.success.bind(this), 
+                this.loaded.bind(this)
         );
     }
 }

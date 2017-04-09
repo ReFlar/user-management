@@ -31,7 +31,7 @@ function MemberItem(user) {
                                   className: 'Button Button--link',
                                   onclick: function onclick() {
                                      app.request({
-                                          url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/activate',
+                                          url: app.forum.attribute('apiUrl') + '/reflar/usermanagement/attributes',
                                           method: 'POST',
                                           data: {username: user.username()}
                                      }).then(function () {

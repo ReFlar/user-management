@@ -7,9 +7,16 @@ export default class ModStrikeModal extends Modal {
   init() {
     super.init();
     
-    this.user = this.props.user;
-    
-    
+    if (this.props.data !== undefined) {
+        this.user = this.props;
+        var username = this.user.data.attributes.username;
+        this.title = m.prop(app.translator.trans('reflar-usermanagement.forum.user.controls.previous', {username}));
+        
+      } else {
+        this.user = this.props.user;
+        var username = this.user.data.attributes.username;
+        this.title = m.prop(app.translator.trans('reflar-usermanagement.forum.user.controls.modal', {username}));
+      }
     
     app.request({
           method: 'GET',
@@ -23,8 +30,12 @@ export default class ModStrikeModal extends Modal {
               this.flatstrikes[i]['index'] = i+1;
               this.flatstrikes[i]['id'] = this.strikes[i].attributes['id'];
               this.flatstrikes[i]['actor'] = this.strikes[i].attributes['actor'];
+              this.flatstrikes[i]['reason'] = this.strikes[i].attributes['reason'];
               this.flatstrikes[i]['post'] = this.strikes[i].attributes['post'];
               this.flatstrikes[i]['time'] = new Date(this.strikes[i].attributes['time']);
+            }
+            if (this.user.data.attributes.strikes == 0) {
+              this.strikes = undefined;
             }
             m.redraw();
             this.loading = false;
@@ -36,9 +47,9 @@ export default class ModStrikeModal extends Modal {
   }
 
   title() {
-    var username = this.user.data.attributes.username;
-    return app.translator.trans('reflar-usermanagement.forum.user.controls.modal', {username});
+    return this.title;
   }
+ 
   
   content() {
     return (
@@ -47,11 +58,11 @@ export default class ModStrikeModal extends Modal {
              FieldSet.component({
                className: 'ModStrikeModal--fieldset',
                 children: [
-                  (this.flatstrikes !== undefined ? 
-                  m('table', {className: "NotificationGrid"}, [m('thead', [m('tr', [m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.number')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.content')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.time')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]),m('tbody',[
+                  (this.strikes !== undefined ? 
+                  m('table', {className: "NotificationGrid"}, [m('thead', [m('tr', [m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.number')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.reason')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.content')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.time')]),m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]),m('tbody',[
                     this.flatstrikes.map((strike) => {
                       return [
-                        m('tr', [m('td',[strike['index']]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post']},[app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor']},[strike['actor']])]),m('td',[humanTime(strike['time'])]),m('td',[m('a', {className: "icon fa fa-fw fa-times", onclick: ()=>{this.deleteStrike(strike['id'])}})])])
+                        m('tr', [m('td',[strike['index']]),m('td',[strike['reason']]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post']},[app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]),m('td',[m('a', {target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor']},[strike['actor']])]),m('td',[humanTime(strike['time'])]),m('td',[m('a', {className: "icon fa fa-fw fa-times", onclick: ()=>{this.deleteStrike(strike['id'])}})])])
                       ]})])])
                        : m('tr', [m('td',[app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])),
                   ]})
