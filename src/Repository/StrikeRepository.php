@@ -18,7 +18,7 @@ use Flarum\Core\Post;
 use Flarum\Core\Repository\UserRepository;
 use Flarum\Core\User;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Reflar\UserManagement\Strike;
+use Reflar\UserManagement\strike;
 
 class StrikeRepository
 {
@@ -60,16 +60,11 @@ class StrikeRepository
         return $strikes;
     }
 
-    public function findOrFail($id)
-    {
-        return Strike::where('id', $id)->firstOrFail();
-    }
-
     public function serveStrike(Post $post, User $user, $actorId, $reason)
     {
         $strike = new Strike();
         $strike->user_id = $user->id;
-        $strike->post_id = $post->discussion_id.'/'.$post->number;
+        $strike->post = $post->discussion_id.'/'.$post->number;
         $strike->actor_id = $actorId;
         $strike->post_content = $post->content;
         $strike->reason = $reason;
@@ -77,19 +72,18 @@ class StrikeRepository
 
         $strike->save();
 
-        $user->strikes = ++$user->strikes;
-
-        $user->save();
+        $user->increment('strikes');
 
         return $strike;
     }
 
     public function deleteStrike($id, User $actor)
     {
-        $strike = $this->findOrFail($id);
+        $strike = Strike::findOrFail($id);
         $user = $this->users->findOrFail($strike->user_id, $actor);
-        $user->strikes = --$user->strikes;
-        $user->save();
+        
+        $user->decrement('strikes');
+
         $strike->delete();
 
         return true;

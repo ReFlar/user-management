@@ -15,7 +15,6 @@ namespace Reflar\UserManagement;
 
 use Flarum\Database\AbstractModel;
 
-class Strike extends AbstractModel
+class strike extends AbstractModel
 {
-    protected $table = 'strikes';
 }

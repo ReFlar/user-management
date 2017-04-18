@@ -1,10 +1,12 @@
 import app from 'flarum/app';
+import Alert from "flarum/components/Alert";
 import Page from 'flarum/components/Page';
 import Button from 'flarum/components/Button';
 import LoadingIndicator from 'flarum/components/LoadingIndicator';
-import MemberSettingsModal from 'Reflar/UserManagement/components/MemberSettingsModal';
 import humanTime from 'flarum/helpers/humanTime';
+import Switch from 'flarum/components/Switch';
 import icon from 'flarum/helpers/icon';
+import saveSettings from "flarum/utils/saveSettings";
 import AdminStrikeModal from 'Reflar/UserManagement/components/AdminStrikeModal';
 
 
@@ -74,11 +76,19 @@ function MemberItem(user) {
 export default class MemberPage extends Page {
     init() {
         super.init();
-
+      
+        const settings = app.data.settings;
+      
         this.loading = true;
         this.moreResults = false;
         this.users = [];
         this.refresh();
+      
+        this.genderRegEnabled = m.prop(settings['Reflar-genderRegEnabled'] === '1');
+        this.ageRegEnabled = m.prop(settings['Reflar-ageRegEnabled']  === '1');
+        this.emailRegEnabled = m.prop(settings['Reflar-emailRegEnabled']  === '1');
+        this.recaptcha = m.prop(settings['Reflar-recaptcha']  === '1');
+        this.amountPerPage = m.prop(settings['ReFlar-amountPerPage'] || 25);
     }
 
     view() {
@@ -99,11 +109,70 @@ export default class MemberPage extends Page {
                 m('div', {className: 'MemberList-header'}, [
                     m('div', {className: 'container'}, [
                         m('p', {}, app.translator.trans('reflar-usermanagement.admin.page.about_text')),
+                              <div className="Form-group">
+                                {Switch.component({
+                                  className: "SettingsModal-switch",
+                                  state: this.emailRegEnabled(),
+                                  children: app.translator.trans('reflar-usermanagement.admin.modal.email_switch'),
+                                  onchange: this.emailRegEnabled
+                                })}
+                              </div>,
+                              <div className="Form-group">
+                              {Switch.component({
+                                  className: "SettingsModal-switch",
+                                  state: this.genderRegEnabled(),
+                                  children: app.translator.trans('reflar-usermanagement.admin.modal.gender_label'),
+                                  onchange: this.genderRegEnabled
+                                })}
+                              </div>,
+                              <div className="Form-group">
+                              {Switch.component({
+                                  className: "SettingsModal-switch",
+                                  state: this.ageRegEnabled(),
+                                  children: app.translator.trans('reflar-usermanagement.admin.modal.age_label'),
+                                  onchange: this.ageRegEnabled
+                                })} 
+                              </div>,
+                              <div className="Form-group">
+                              {Switch.component({
+                                  className: "SettingsModal-switch",
+                                  state: this.recaptcha(),
+                                  children: app.translator.trans('reflar-usermanagement.admin.modal.recaptcha'),
+                                  onchange: this.recaptcha
+                                })} 
+                              </div>,
+                              <div className="Form-group">
+                                <label>
+                                  {app.translator.trans('reflar-usermanagement.admin.modal.amount_label')}
+                                </label>
+                                <input className="FormControl" type="number" value={this.amountPerPage()} onchange={this.amountPerPage} />
+                              </div>,
                         Button.component({
                             className: 'Button Button--primary',
                             icon: 'plus',
-                            children: app.translator.trans('reflar-usermanagement.admin.page.settings'),
-                            onclick: () => app.modal.show(new MemberSettingsModal())
+                            children: app.translator.trans('reflar-usermanagement.forum.user.settings.save'),
+                            onclick: () => {
+                      
+                                if (this.loading) return;
+                      
+                                this.loading = true
+                      
+                                saveSettings({
+                                  'Reflar-genderRegEnabled': this.genderRegEnabled(),
+                                  'Reflar-ageRegEnabled': this.ageRegEnabled(),
+                                  'Reflar-emailRegEnabled': this.emailRegEnabled(),
+                                  'Reflar-recaptcha': this.recaptcha(),
+                                  'ReFlar-amountPerPage': this.amountPerPage()
+                                }).then(() => {
+                                    app.alerts.show(this.successAlert = new Alert({
+                                    type: 'success',
+                                    children: app.translator.trans('core.admin.basics.saved_message')
+                                    }));
+                                  }).then(() => {
+                                    this.loading = false;
+                                    m.redraw();
+                                    })
+                            }
                         })
                     ])
                 ]),

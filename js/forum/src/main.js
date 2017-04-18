@@ -26,16 +26,24 @@ app.initializers.add('Reflar-User-Management', function(app) {
 
     extend(UserCard.prototype, 'infoItems', function(items) {
       var age = this.props.user.data.attributes['age'];
-      items.add('gender',
-        this.props.user.data.attributes.gender
-      );
-      items.add('age',
-        app.translator.trans('reflar-usermanagement.forum.user.age', {age})
-      );
+      
+      if (this.props.user.data.attributes.gender !== "") {
+        items.add('gender',
+          this.props.user.data.attributes.gender
+        );
+      }
+      
+      if (age === 0 || age === "") {
+      } else {
+        items.add('age',
+          app.translator.trans('reflar-usermanagement.forum.user.age', {age})
+        );
+      }
     });
   
     extend(UserControls, 'moderationControls', function(items, user) {
     if (user.canViewStrike()) {
+      console.log({user});
       items.add('strikes', Button.component({
         children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
         icon: 'times',

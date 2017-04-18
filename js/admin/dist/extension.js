@@ -144,10 +144,10 @@ System.register('Reflar/UserManagement/components/AdminStrikeModal', ['flarum/co
 });;
 'use strict';
 
-System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'flarum/components/Page', 'flarum/components/Button', 'flarum/components/LoadingIndicator', 'Reflar/UserManagement/components/MemberSettingsModal', 'flarum/helpers/humanTime', 'flarum/helpers/icon', 'Reflar/UserManagement/components/AdminStrikeModal'], function (_export, _context) {
+System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'flarum/components/Alert', 'flarum/components/Page', 'flarum/components/Button', 'flarum/components/LoadingIndicator', 'flarum/helpers/humanTime', 'flarum/components/Switch', 'flarum/helpers/icon', 'flarum/utils/saveSettings', 'Reflar/UserManagement/components/AdminStrikeModal'], function (_export, _context) {
     "use strict";
 
-    var app, Page, Button, LoadingIndicator, MemberSettingsModal, humanTime, icon, AdminStrikeModal, MemberPage;
+    var app, Alert, Page, Button, LoadingIndicator, humanTime, Switch, icon, saveSettings, AdminStrikeModal, MemberPage;
 
 
     function MemberItem(user) {
@@ -183,18 +183,22 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
+        }, function (_flarumComponentsAlert) {
+            Alert = _flarumComponentsAlert.default;
         }, function (_flarumComponentsPage) {
             Page = _flarumComponentsPage.default;
         }, function (_flarumComponentsButton) {
             Button = _flarumComponentsButton.default;
         }, function (_flarumComponentsLoadingIndicator) {
             LoadingIndicator = _flarumComponentsLoadingIndicator.default;
-        }, function (_ReflarUserManagementComponentsMemberSettingsModal) {
-            MemberSettingsModal = _ReflarUserManagementComponentsMemberSettingsModal.default;
         }, function (_flarumHelpersHumanTime) {
             humanTime = _flarumHelpersHumanTime.default;
+        }, function (_flarumComponentsSwitch) {
+            Switch = _flarumComponentsSwitch.default;
         }, function (_flarumHelpersIcon) {
             icon = _flarumHelpersIcon.default;
+        }, function (_flarumUtilsSaveSettings) {
+            saveSettings = _flarumUtilsSaveSettings.default;
         }, function (_ReflarUserManagementComponentsAdminStrikeModal) {
             AdminStrikeModal = _ReflarUserManagementComponentsAdminStrikeModal.default;
         }],
@@ -212,14 +216,24 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                     value: function init() {
                         babelHelpers.get(MemberPage.prototype.__proto__ || Object.getPrototypeOf(MemberPage.prototype), 'init', this).call(this);
 
+                        var settings = app.data.settings;
+
                         this.loading = true;
                         this.moreResults = false;
                         this.users = [];
                         this.refresh();
+
+                        this.genderRegEnabled = m.prop(settings['Reflar-genderRegEnabled'] === '1');
+                        this.ageRegEnabled = m.prop(settings['Reflar-ageRegEnabled'] === '1');
+                        this.emailRegEnabled = m.prop(settings['Reflar-emailRegEnabled'] === '1');
+                        this.recaptcha = m.prop(settings['Reflar-recaptcha'] === '1');
+                        this.amountPerPage = m.prop(settings['ReFlar-amountPerPage'] || 25);
                     }
                 }, {
                     key: 'view',
                     value: function view() {
+                        var _this2 = this;
+
                         var loading = void 0;
 
                         if (this.loading) {
@@ -232,12 +246,76 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                             });
                         }
 
-                        return [m('div', { className: 'MemberListPage' }, [m('div', { className: 'MemberList-header' }, [m('div', { className: 'container' }, [m('p', {}, app.translator.trans('reflar-usermanagement.admin.page.about_text')), Button.component({
+                        return [m('div', { className: 'MemberListPage' }, [m('div', { className: 'MemberList-header' }, [m('div', { className: 'container' }, [m('p', {}, app.translator.trans('reflar-usermanagement.admin.page.about_text')), m(
+                            'div',
+                            { className: 'Form-group' },
+                            Switch.component({
+                                className: "SettingsModal-switch",
+                                state: this.emailRegEnabled(),
+                                children: app.translator.trans('reflar-usermanagement.admin.modal.email_switch'),
+                                onchange: this.emailRegEnabled
+                            })
+                        ), m(
+                            'div',
+                            { className: 'Form-group' },
+                            Switch.component({
+                                className: "SettingsModal-switch",
+                                state: this.genderRegEnabled(),
+                                children: app.translator.trans('reflar-usermanagement.admin.modal.gender_label'),
+                                onchange: this.genderRegEnabled
+                            })
+                        ), m(
+                            'div',
+                            { className: 'Form-group' },
+                            Switch.component({
+                                className: "SettingsModal-switch",
+                                state: this.ageRegEnabled(),
+                                children: app.translator.trans('reflar-usermanagement.admin.modal.age_label'),
+                                onchange: this.ageRegEnabled
+                            })
+                        ), m(
+                            'div',
+                            { className: 'Form-group' },
+                            Switch.component({
+                                className: "SettingsModal-switch",
+                                state: this.recaptcha(),
+                                children: app.translator.trans('reflar-usermanagement.admin.modal.recaptcha'),
+                                onchange: this.recaptcha
+                            })
+                        ), m(
+                            'div',
+                            { className: 'Form-group' },
+                            m(
+                                'label',
+                                null,
+                                app.translator.trans('reflar-usermanagement.admin.modal.amount_label')
+                            ),
+                            m('input', { className: 'FormControl', type: 'number', value: this.amountPerPage(), onchange: this.amountPerPage })
+                        ), Button.component({
                             className: 'Button Button--primary',
                             icon: 'plus',
-                            children: app.translator.trans('reflar-usermanagement.admin.page.settings'),
+                            children: app.translator.trans('reflar-usermanagement.forum.user.settings.save'),
                             onclick: function onclick() {
-                                return app.modal.show(new MemberSettingsModal());
+
+                                if (_this2.loading) return;
+
+                                _this2.loading = true;
+
+                                saveSettings({
+                                    'Reflar-genderRegEnabled': _this2.genderRegEnabled(),
+                                    'Reflar-ageRegEnabled': _this2.ageRegEnabled(),
+                                    'Reflar-emailRegEnabled': _this2.emailRegEnabled(),
+                                    'Reflar-recaptcha': _this2.recaptcha(),
+                                    'ReFlar-amountPerPage': _this2.amountPerPage()
+                                }).then(function () {
+                                    app.alerts.show(_this2.successAlert = new Alert({
+                                        type: 'success',
+                                        children: app.translator.trans('core.admin.basics.saved_message')
+                                    }));
+                                }).then(function () {
+                                    _this2.loading = false;
+                                    m.redraw();
+                                });
                             }
                         })])]), m('div', { className: 'MemberList-list' }, [m('div', { className: 'container' }, [m('div', { className: 'MemberListItems' }, [m('label', { className: 'MemberListLabel' }, app.translator.trans('reflar-usermanagement.admin.page.list_title')), m('ol', {
                             className: 'MemberList'
@@ -246,7 +324,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                 }, {
                     key: 'refresh',
                     value: function refresh() {
-                        var _this2 = this;
+                        var _this3 = this;
 
                         var clear = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
@@ -256,10 +334,10 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                         }
 
                         return this.loadResults().then(function (results) {
-                            _this2.users = [];
-                            _this2.parseResults(results);
+                            _this3.users = [];
+                            _this3.parseResults(results);
                         }, function () {
-                            _this2.loading = false;
+                            _this3.loading = false;
                             m.redraw();
                         });
                     }
@@ -301,90 +379,6 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
             _export('default', MemberPage);
         }
     };
-});;
-'use strict';
-
-System.register('Reflar/UserManagement/components/MemberSettingsModal', ['flarum/app', 'flarum/extend', 'flarum/components/SettingsModal', 'flarum/components/Switch'], function (_export, _context) {
-  "use strict";
-
-  var app, extend, SettingsModal, Switch, MemberSettingsModal;
-  return {
-    setters: [function (_flarumApp) {
-      app = _flarumApp.default;
-    }, function (_flarumExtend) {
-      extend = _flarumExtend.extend;
-    }, function (_flarumComponentsSettingsModal) {
-      SettingsModal = _flarumComponentsSettingsModal.default;
-    }, function (_flarumComponentsSwitch) {
-      Switch = _flarumComponentsSwitch.default;
-    }],
-    execute: function () {
-      MemberSettingsModal = function (_SettingsModal) {
-        babelHelpers.inherits(MemberSettingsModal, _SettingsModal);
-
-        function MemberSettingsModal() {
-          babelHelpers.classCallCheck(this, MemberSettingsModal);
-          return babelHelpers.possibleConstructorReturn(this, (MemberSettingsModal.__proto__ || Object.getPrototypeOf(MemberSettingsModal)).apply(this, arguments));
-        }
-
-        babelHelpers.createClass(MemberSettingsModal, [{
-          key: 'className',
-          value: function className() {
-            return 'SettingsModal Modal--small';
-          }
-        }, {
-          key: 'title',
-          value: function title() {
-            return app.translator.trans('reflar-usermanagement.admin.modal.settings_title');
-          }
-        }, {
-          key: 'form',
-          value: function form() {
-            return [m(
-              'div',
-              { className: 'Form-group' },
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-emailRegEnabled')(),
-                children: app.translator.trans('reflar-usermanagement.admin.modal.email_switch'),
-                onchange: this.setting('ReFlar-emailRegEnabled')
-              }),
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-genderRegEnabled')(),
-                children: app.translator.trans('reflar-usermanagement.admin.modal.gender_label'),
-                onchange: this.setting('ReFlar-genderRegEnabled')
-              }),
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-ageRegEnabled')(),
-                children: app.translator.trans('reflar-usermanagement.admin.modal.age_label'),
-                onchange: this.setting('ReFlar-ageRegEnabled')
-              }),
-              Switch.component({
-                className: "SettingsModal-switch",
-                state: this.setting('ReFlar-recaptcha')(),
-                children: app.translator.trans('reflar-usermanagement.admin.modal.recaptcha'),
-                onchange: this.setting('ReFlar-recaptcha')
-              })
-            ), m(
-              'div',
-              { className: 'Form-group' },
-              m(
-                'label',
-                null,
-                app.translator.trans('reflar-usermanagement.admin.modal.amount_label')
-              ),
-              m('input', { className: 'FormControl', type: 'number', bidi: this.setting('ReFlar-amountPerPage') })
-            )];
-          }
-        }]);
-        return MemberSettingsModal;
-      }(SettingsModal);
-
-      _export('default', MemberSettingsModal);
-    }
-  };
 });;
 'use strict';
 

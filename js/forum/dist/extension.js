@@ -14,7 +14,7 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
 
             items.add('serveStrike', [m(Button, {
                 icon: 'times',
-                className: 'refar-usermanagement-strikeButon',
+                className: 'refar-usermanagement-strikeButton',
                 onclick: function onclick() {
                     app.modal.show(new StrikeModal({ post: post }));
                 }
@@ -276,7 +276,7 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
             if (this.strikes !== undefined) {
               return 'ModStrikeModal Modal';
             } else {
-              return 'Modal Modal--small';
+              return 'NoStrikeModa Modal Modal--small';
             }
           }
         }, {
@@ -464,12 +464,19 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
 
         extend(UserCard.prototype, 'infoItems', function (items) {
           var age = this.props.user.data.attributes['age'];
-          items.add('gender', this.props.user.data.attributes.gender);
-          items.add('age', app.translator.trans('reflar-usermanagement.forum.user.age', { age: age }));
+
+          if (this.props.user.data.attributes.gender !== "") {
+            items.add('gender', this.props.user.data.attributes.gender);
+          }
+
+          if (age === 0 || age === "") {} else {
+            items.add('age', app.translator.trans('reflar-usermanagement.forum.user.age', { age: age }));
+          }
         });
 
         extend(UserControls, 'moderationControls', function (items, user) {
           if (user.canViewStrike()) {
+            console.log({ user: user });
             items.add('strikes', Button.component({
               children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
               icon: 'times',

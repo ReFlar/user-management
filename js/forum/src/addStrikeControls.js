@@ -17,7 +17,7 @@ export default function() {
         items.add('serveStrike', [
             m(Button, {
                 icon: 'times',
-                className: 'refar-usermanagement-strikeButon',
+                className: 'refar-usermanagement-strikeButton',
                 onclick: () => {
                     app.modal.show(new StrikeModal({post}));
                     
