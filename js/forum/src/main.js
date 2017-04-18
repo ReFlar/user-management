@@ -43,7 +43,6 @@ app.initializers.add('Reflar-User-Management', function(app) {
   
     extend(UserControls, 'moderationControls', function(items, user) {
     if (user.canViewStrike()) {
-      console.log({user});
       items.add('strikes', Button.component({
         children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
         icon: 'times',

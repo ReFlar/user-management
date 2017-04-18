@@ -476,7 +476,6 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
 
         extend(UserControls, 'moderationControls', function (items, user) {
           if (user.canViewStrike()) {
-            console.log({ user: user });
             items.add('strikes', Button.component({
               children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
               icon: 'times',
