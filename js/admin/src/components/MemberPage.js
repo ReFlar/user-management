@@ -145,12 +145,12 @@ export default class MemberPage extends Page {
                                 <label>
                                   {app.translator.trans('reflar-usermanagement.admin.modal.amount_label')}
                                 </label>
-                                <input className="FormControl" type="number" value={this.amountPerPage()} onchange={this.amountPerPage} />
+                                <input className="FormControl" type="number" value={this.amountPerPage()} oonchange={m.withAttr('value', this.amountPerPage)} />
                               </div>,
                         Button.component({
                             className: 'Button Button--primary',
                             icon: 'plus',
-                            children: app.translator.trans('reflar-usermanagement.forum.user.settings.save'),
+                            children: app.translator.trans('core.admin.appearance.submit_button'),
                             onclick: () => {
                       
                                 if (this.loading) return;

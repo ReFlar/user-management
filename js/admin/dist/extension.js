@@ -290,11 +290,11 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                                 null,
                                 app.translator.trans('reflar-usermanagement.admin.modal.amount_label')
                             ),
-                            m('input', { className: 'FormControl', type: 'number', value: this.amountPerPage(), onchange: this.amountPerPage })
+                            m('input', { className: 'FormControl', type: 'number', value: this.amountPerPage(), oonchange: m.withAttr('value', this.amountPerPage) })
                         ), Button.component({
                             className: 'Button Button--primary',
                             icon: 'plus',
-                            children: app.translator.trans('reflar-usermanagement.forum.user.settings.save'),
+                            children: app.translator.trans('core.admin.appearance.submit_button'),
                             onclick: function onclick() {
 
                                 if (_this2.loading) return;
