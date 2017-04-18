@@ -145,7 +145,7 @@ export default class MemberPage extends Page {
                                 <label>
                                   {app.translator.trans('reflar-usermanagement.admin.modal.amount_label')}
                                 </label>
-                                <input className="FormControl" type="number" value={this.amountPerPage()} oonchange={m.withAttr('value', this.amountPerPage)} />
+                                <input className="FormControl" type="number" value={this.amountPerPage()} onchange={m.withAttr('value', this.amountPerPage)} />
                               </div>,
                         Button.component({
                             className: 'Button Button--primary',
