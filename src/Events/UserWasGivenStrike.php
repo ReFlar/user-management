@@ -15,7 +15,7 @@ namespace Reflar\UserManagement\Events;
 use Flarum\Core\Post;
 use Flarum\Core\User;
 
-class UserGivenStrike
+class UserWasGivenStrike
 {
     /**
      * @var Post

@@ -22,7 +22,7 @@ use Flarum\Core\Support\DispatchEventsTrait;
 use Flarum\Core\User;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
-use Reflar\UserManagement\Events\UserGivenStrike;
+use Reflar\UserManagement\Events\UserWasGivenStrike;
 use Reflar\UserManagement\Events\UserWillBeGivenStrike;
 use Reflar\UserManagement\Repository\StrikeRepository;
 use Reflar\UserManagement\Validators\StrikeValidator;
@@ -102,7 +102,7 @@ class ServeStrikeHandler
             $post->save();
         }
         $this->events->fire(
-            new UserGivenStrike($post, $user, $command->actor, $command->reason)
+            new UserWasGivenStrike($post, $user, $command->actor, $command->reason)
         );
 
         return $strike;
