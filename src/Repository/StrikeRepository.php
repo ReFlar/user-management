@@ -81,7 +81,7 @@ class StrikeRepository
     {
         $strike = Strike::findOrFail($id);
         $user = $this->users->findOrFail($strike->user_id, $actor);
-        
+
         $user->decrement('strikes');
 
         $strike->delete();
