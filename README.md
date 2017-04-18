@@ -6,10 +6,10 @@ A [Flarum](http://flarum.org) extension that allows your to manage every aspect 
 
 This extension allows you to give users strikes for posts if they violate rules. Those strikes are kept and can be viewed at anytime by anyone with permission. This extension also allows your to disable the email registration option, as well as adds age and gender at registration. The user's age and gender is shown on their profile page. You can also manually activate users from the admin interface, or from the users page.
 
-[center][img]http://i.imgur.com/pkMM6aA.gif[/img]
+![gif](http://i.imgur.com/pkMM6aA.gif)
 
 
-[img]http://i.imgur.com/dfHaFwL.gif[/img][/center]
+![gif](http://i.imgur.com/dfHaFwL.gif)
 
 ### Goals
 
