@@ -13,7 +13,7 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
             if (!discussion.canStrike()) return;
 
             items.add('serveStrike', [m(Button, {
-                icon: 'times',
+                icon: 'exclamation-triangle',
                 className: 'refar-usermanagement-strikeButton',
                 onclick: function onclick() {
                     app.modal.show(new StrikeModal({ post: post }));
@@ -478,7 +478,7 @@ System.register('Reflar/UserManagement/main', ['flarum/app', 'flarum/extend', 'f
           if (user.canViewStrike()) {
             items.add('strikes', Button.component({
               children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
-              icon: 'times',
+              icon: 'exclamation-triangle',
               onclick: function onclick() {
                 app.modal.show(new ModStrikeModal({ user: user }));
               }

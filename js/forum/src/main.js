@@ -45,7 +45,7 @@ app.initializers.add('Reflar-User-Management', function(app) {
     if (user.canViewStrike()) {
       items.add('strikes', Button.component({
         children: app.translator.trans('reflar-usermanagement.forum.user.controls.strike_button'),
-        icon: 'times',
+        icon: 'exclamation-triangle',
         onclick: function() {
           app.modal.show(new ModStrikeModal({user}));
         }
