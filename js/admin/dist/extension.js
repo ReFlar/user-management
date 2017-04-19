@@ -155,7 +155,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
         var online = user.isOnline();
         var activated = user.isActivated();
 
-        return [m('li', { "data-id": user.id() }, [m('div', { className: 'MemberListItem-info' }, [m('span', { className: 'MemberListItem-name' }, [user.username()]), m('div', { className: 'MemberListItem-info' + (activated ? '1' : '0') }, [activated ? [m('span', { className: 'MemberCard-lastSeen' + (online ? ' online' : '') }, [online ? [icon('circle'), ' ', { className: 'MemberCard-online' }, app.translator.trans('reflar-usermanagement.admin.page.online_text')] : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]])] : [m('span', { className: 'MemberCard-lastSeen' }, [m('a', {
+        return [m('li', { "data-id": user.id() }, [m('div', { className: 'MemberListItem-info' }, [m('span', { className: 'MemberListItem-name' }, [user.username()]), m('div', { className: 'MemberListItem-info' + (activated ? '1' : '0') }, [activated ? [m('span', { className: 'MemberCard-lastSeen' + (online ? ' online' : '') }, [online ? [{ className: 'MemberCard-online' }, icon('circle'), ' ', app.translator.trans('reflar-usermanagement.admin.page.online_text')] : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]])] : [m('span', { className: 'MemberCard-lastSeen' }, [m('a', {
             className: 'Button Button--link',
             onclick: function onclick() {
                 app.request({
@@ -168,10 +168,10 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
             }
         }, [app.translator.trans('reflar-usermanagement.admin.page.activate')])])]]), m('span', { className: 'MemberListItem-comments' }, [icon('comment-o'), user.commentsCount()]), m('span', { className: 'MemberListItem-discussions' }, [icon('reorder'), user.discussionsCount()]), Button.component({
             className: 'Button Button--link',
-            icon: 'times',
+            icon: 'exclamation-triangle',
             onclick: function onclick(e) {
-                e.preventDefault();
                 app.modal.show(new AdminStrikeModal({ user: user }));
+                m.redraw();
             }
         }), m('a', {
             className: 'Button Button--link',
@@ -314,7 +314,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                                     }));
                                 }).then(function () {
                                     _this2.loading = false;
-                                    m.redraw();
+                                    window.location.reload();
                                 });
                             }
                         })])]), m('div', { className: 'MemberList-list' }, [m('div', { className: 'container' }, [m('div', { className: 'MemberListItems' }, [m('label', { className: 'MemberListLabel' }, app.translator.trans('reflar-usermanagement.admin.page.list_title')), m('ol', {

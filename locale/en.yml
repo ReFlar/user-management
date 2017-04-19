@@ -29,7 +29,7 @@ reflar-usermanagement:
       settings: Settings
       list_title: Users
       load_more_button: Load More
-      about_text: "Your users at a glance. Click on the eye to view the user's profile. Click on the 'X' to view a user's strikes"
+      about_text: "Your users at a glance. Click on the eye to view the user's profile. Click on the '!' to view a user's strikes"
   forum:
     post_controls:
       strike_button: Serve Strike

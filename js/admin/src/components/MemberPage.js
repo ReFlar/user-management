@@ -25,7 +25,8 @@ function MemberItem(user) {
                       activated
                           ? [m('span', {className: 'MemberCard-lastSeen' + (online ? ' online' : '')}, [
                                 online 
-                                    ? [icon('circle'), ' ', {className: 'MemberCard-online'}, app.translator.trans('reflar-usermanagement.admin.page.online_text')]
+                            
+                                    ? [{className: 'MemberCard-online'}, icon('circle'), ' ', app.translator.trans('reflar-usermanagement.admin.page.online_text')]
                                     : [icon('clock-o'), ' ', humanTime(user.lastSeenTime())]
                             ])]
                           : [m('span', {className: 'MemberCard-lastSeen'}, [
@@ -55,10 +56,10 @@ function MemberItem(user) {
                   ]),
                  Button.component({
                     className: 'Button Button--link',
-                    icon: 'times',
+                    icon: 'exclamation-triangle',
                     onclick: function (e) {
-                        e.preventDefault();
                         app.modal.show(new AdminStrikeModal({user}));
+                        m.redraw();
                     }
                   }),
                   m('a', {
@@ -170,7 +171,7 @@ export default class MemberPage extends Page {
                                     }));
                                   }).then(() => {
                                     this.loading = false;
-                                    m.redraw();
+                                    window.location.reload();
                                     })
                             }
                         })
