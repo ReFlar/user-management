@@ -1,6 +1,6 @@
 # Flarum User Management by ReFlar
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ReFlar/user-management/blob/master/LICENSE) [![Latest Stable Version](https://img.shields.io/packagist/v/reflar/user-management.svg)](https://github.com/ReFlar/user-management)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/ReFlar/user-management/blob/master/LICENSE) [![Latest Stable Version](https://img.shields.io/packagist/v/reflar/user-management.svg)](https://gitlab.com/ReFlar/user-management)
 
 A [Flarum](http://flarum.org) extension that allows your to manage every aspect of your users, with style!
 
@@ -52,6 +52,6 @@ You can also post to /api/reflar/usermanagement/attributes to set a user's gende
 
 ### Links
 
-- [on github](https://github.com/ReFlar/user-management)
+- [on github](https://gitlab.com/ReFlar/user-management)
 - [on packagist](https://packagist.org/packages/ReFlar/user-management)
-- [issues](https://github.com/ReFlar/user-management/issues)
+- [issues](https://gitlab.com/ReFlar/user-management/issues)
