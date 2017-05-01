@@ -64,7 +64,8 @@ class StrikeRepository
     {
         $strike = new Strike();
         $strike->user_id = $user->id;
-        $strike->post_id = $post->discussion_id.'/'.$post->number;
+        $strike->post_id = $post->number;
+        $strike->discussion_id = $post->discussion_id;
         $strike->actor_id = $actorId;
         $strike->post_content = $post->content;
         $strike->reason = $reason;
