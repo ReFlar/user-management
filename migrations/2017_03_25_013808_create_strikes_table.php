@@ -19,7 +19,7 @@ return [
         $schema->create('strikes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('post_id');
+            $table->integer('post_id');
             $table->integer('actor_id');
             $table->string('reason');
             $table->string('post_content');
