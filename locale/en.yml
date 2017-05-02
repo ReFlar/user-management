@@ -15,7 +15,7 @@ reflar-usermanagement:
         time: Time
         reason: Reason
         link: Link
-        remove: remove
+        remove: Remove
         title : "{username}'s Strikes"
       settings_title: Settings
       email_switch: Disable email registration
@@ -65,4 +65,4 @@ reflar-usermanagement:
         time: Time
         reason: Reason
         link: Link
-        remove: remove
+        remove: Remove

@@ -252,9 +252,10 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
               method: 'GET',
               url: app.forum.attribute('apiUrl') + '/strike/' + this.user.data.id
             }).then(function (response) {
+              ;
               _this2.strikes = response.data;
               _this2.flatstrikes = [];
-              for (i = 0; i < _this2.user.data.attributes.strikes; i++) {
+              for (i = 0; i < _this2.strikes.length; i++) {
                 _this2.flatstrikes[i] = [];
                 _this2.flatstrikes[i]['index'] = i + 1;
                 _this2.flatstrikes[i]['id'] = _this2.strikes[i].attributes['id'];
@@ -263,7 +264,7 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
                 _this2.flatstrikes[i]['post'] = _this2.strikes[i].attributes['post'];
                 _this2.flatstrikes[i]['time'] = new Date(_this2.strikes[i].attributes['time']);
               }
-              if (_this2.user.data.attributes.strikes == 0) {
+              if (_this2.strikes.length == 0) {
                 _this2.strikes = undefined;
               }
               m.redraw();
@@ -276,7 +277,7 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
             if (this.strikes !== undefined) {
               return 'ModStrikeModal Modal';
             } else {
-              return 'NoStrikeModa Modal Modal--small';
+              return 'NoStrikeModal Modal Modal--small';
             }
           }
         }, {
@@ -291,11 +292,11 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
 
             return m('div', { className: 'Modal-body' }, [m('div', { className: 'Form Form--centered' }, [FieldSet.component({
               className: 'ModStrikeModal--fieldset',
-              children: [this.strikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.reason')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
-                return [m('tr', [m('td', [strike['index']]), m('td', [strike['reason']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
+              children: [this.strikes !== undefined ? m('table', { className: "NotificationGrid StrikeTable" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.reason')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', { className: "HideOnMobile" }, [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', { className: "HideOnMobile" }, [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
+                return [m('tr', [m('td', [strike['index']]), m('td', [strike['reason']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', { className: "HideOnMobile" }, [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', { className: "HideOnMobile" }, [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
                     _this3.deleteStrike(strike['id'], strike['index']);
                   } })])])];
-              })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
+              })])]) : m('tr', { className: "Test" }, [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
           }
         }, {
           key: 'deleteStrike',
@@ -308,7 +309,7 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
             app.request({
               method: 'Delete',
               url: app.forum.attribute('apiUrl') + '/strike/' + id
-            }).then(this.flatstrikes.splice(index - 1, 1), m.redraw(), this.loaded.bind(this));
+            }).then(this.flatstrikes.splice(index - 1, 1), app.modal.close());
           }
         }]);
         return ModStrikeModal;

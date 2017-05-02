@@ -6,9 +6,19 @@
     text-align: center !important;
     margin: auto !important;
     
-    li {
+    > ul {
       list-style-type: none;
+	  padding: 0px;
     }
+	.StrikeTable {
+		margin: auto;
+	}
+	
+	@media only screen and (max-width: 767px) {
+		.HideOnMobile {
+			display: none;
+		}
+	}
   }
 }
 
@@ -19,8 +29,8 @@
     text-align: center !important;
     margin: auto !important;
     
-    li {
-      list-style-type: none;
+    > ul {
+      list-style: none;
     }
   }
 }

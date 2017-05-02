@@ -10,7 +10,7 @@
 
 namespace  Reflar\UserManagement\Api\Controllers;
 
-use Flarum\Api\Controller\AbstractCollectionControlle
+use Flarum\Api\Controller\AbstractCollectionController;
 use Flarum\Core\Access\AssertPermissionTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
@@ -39,6 +39,6 @@ class DeleteStrikeController extends AbstractCollectionController
         $this->assertCan($request->getAttribute('actor'), 'user.strike');
         $id = array_get($request->getQueryParams(), 'id');
 
-        return $this->strikes->deleteStrike($id, $actor);
+        $this->strikes->deleteStrike($id, $actor);
     }
 }
