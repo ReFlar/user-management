@@ -50,8 +50,8 @@ class StrikeRepository
     public function findStrikesById($userId)
     {
         $strikes = Strike::where('user_id', $userId)->get();
-        $actor = $this->users->findOrFail($userId);
         foreach ($strikes as $strike) {
+            $actor = $this->users->findOrFail($strike->actor_id);
             $strike['actor_id'] = $actor->username;
             $date = new DateTime($strike['time']);
             $strike['time'] = $date->format(DateTime::RFC3339);

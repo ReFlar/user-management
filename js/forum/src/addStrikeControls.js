@@ -12,7 +12,7 @@ export default function() {
     extend(PostControls, 'moderationControls', function(items, post) {
         const discussion = post.discussion();
 
-        if (!discussion.canStrike()) return;
+        if (!discussion.canStrike() || post.isHidden()) return;
 
         items.add('serveStrike', [
             m(Button, {

@@ -10,7 +10,7 @@ System.register('Reflar/UserManagement/addStrikeControls', ['flarum/extend', 'fl
         extend(PostControls, 'moderationControls', function (items, post) {
             var discussion = post.discussion();
 
-            if (!discussion.canStrike()) return;
+            if (!discussion.canStrike() || post.isHidden()) return;
 
             items.add('serveStrike', [m(Button, {
                 icon: 'exclamation-triangle',
