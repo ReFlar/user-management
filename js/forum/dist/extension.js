@@ -293,13 +293,13 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
               className: 'ModStrikeModal--fieldset',
               children: [this.strikes !== undefined ? m('table', { className: "NotificationGrid" }, [m('thead', [m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.number')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.reason')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.content')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.actor')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.time')]), m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.remove')])])]), m('tbody', [this.flatstrikes.map(function (strike) {
                 return [m('tr', [m('td', [strike['index']]), m('td', [strike['reason']]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/d/' + strike['post'] }, [app.translator.trans('reflar-usermanagement.forum.modal.view.link')])]), m('td', [m('a', { target: "_blank", href: app.forum.attribute('baseUrl') + '/u/' + strike['actor'] }, [strike['actor']])]), m('td', [humanTime(strike['time'])]), m('td', [m('a', { className: "icon fa fa-fw fa-times", onclick: function onclick() {
-                    _this3.deleteStrike(strike['id']);
+                    _this3.deleteStrike(strike['id'], strike['index']);
                   } })])])];
               })])]) : m('tr', [m('td', [app.translator.trans('reflar-usermanagement.forum.modal.view.no_strikes')])])] })])]);
           }
         }, {
           key: 'deleteStrike',
-          value: function deleteStrike(id) {
+          value: function deleteStrike(id, index) {
 
             if (this.loading) return;
 
@@ -308,7 +308,7 @@ System.register('Reflar/UserManagement/components/ModStrikeModal', ['flarum/comp
             app.request({
               method: 'Delete',
               url: app.forum.attribute('apiUrl') + '/strike/' + id
-            }).then(app.modal.close(), this.loaded.bind(this));
+            }).then(this.flatstrikes.splice(index - 1, 1), m.redraw(), this.loaded.bind(this));
           }
         }]);
         return ModStrikeModal;
@@ -386,6 +386,8 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                 }, {
                     key: 'success',
                     value: function success(response) {
+                        app.modal.close();
+                        m.redraw();
                         app.modal.show(new ModStrikeModal(this.user));
                     }
                 }, {
@@ -394,6 +396,9 @@ System.register('Reflar/UserManagement/components/StrikeModal', ['flarum/compone
                         e.preventDefault();
 
                         this.loading = true;
+
+                        this.post.pushAttributes({ hideTime: new Date(), hideUser: app.session.user });
+                        this.post.save({ isHidden: true });
 
                         app.request({
                             method: 'POST',

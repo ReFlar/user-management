@@ -53,6 +53,8 @@ export default class StrikeModal extends Modal {
         ];
     }
   success(response) {
+	app.modal.close();
+	m.redraw();
     app.modal.show(new ModStrikeModal(this.user));
   }
 
@@ -60,6 +62,9 @@ export default class StrikeModal extends Modal {
         e.preventDefault();
 
         this.loading = true;
+		
+		this.post.pushAttributes({ hideTime: new Date(), hideUser: app.session.user });
+		this.post.save({ isHidden: true });
 
         app.request({
             method: 'POST',

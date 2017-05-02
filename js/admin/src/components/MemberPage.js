@@ -104,7 +104,7 @@ export default class MemberPage extends Page {
                 onclick: this.loadMore.bind(this)
             });
         }
-
+		console.log(this.users);
         return [
             m('div', {className: 'MemberListPage'}, [
                 m('div', {className: 'MemberList-header'}, [

@@ -234,6 +234,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                     value: function view() {
                         var _this2 = this;
 
+						console.log(this.users);
                         var loading = void 0;
 
                         if (this.loading) {

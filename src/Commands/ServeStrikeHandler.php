@@ -93,13 +93,10 @@ class ServeStrikeHandler
 
         if ($post instanceof CommentPost) {
             if ($post->number == 1) {
-                $discussion = $this->discussions->findOrFail($post->discussion_id, $comamnd->actor);
+                $discussion = $this->discussions->findOrFail($post->discussion_id, $command->actor);
                 $discussion->hide_time = date('Y-m-d H:i:s');
                 $discussion->save();
-            }
-
-            $post->hide();
-            $post->save();
+			}
         }
         $this->events->fire(
             new UserWasGivenStrike($post, $user, $command->actor, $command->reason)

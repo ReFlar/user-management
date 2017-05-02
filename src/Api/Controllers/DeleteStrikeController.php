@@ -10,7 +10,7 @@
 
 namespace  Reflar\UserManagement\Api\Controllers;
 
-use Flarum\Api\Controller\AbstractCollectionController;
+use Flarum\Api\Controller\AbstractCollectionControlle
 use Flarum\Core\Access\AssertPermissionTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Reflar\UserManagement\Api\Serializers\StrikeSerializer;
