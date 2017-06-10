@@ -89,6 +89,7 @@ export default class MemberPage extends Page {
         this.ageRegEnabled = m.prop(settings['Reflar-ageRegEnabled']  === '1');
         this.emailRegEnabled = m.prop(settings['Reflar-emailRegEnabled']  === '1');
         this.recaptcha = m.prop(settings['Reflar-recaptcha']  === '1');
+        this.spam = m.prop(settings['Reflar-sfs']  === '1');
         this.amountPerPage = m.prop(settings['ReFlar-amountPerPage'] || 25);
     }
 
@@ -143,6 +144,14 @@ export default class MemberPage extends Page {
                                 })} 
                               </div>,
                               <div className="Form-group">
+                                      {Switch.component({
+                                          className: "SettingsModal-switch",
+                                          state: this.spam(),
+                                          children: app.translator.trans('reflar-usermanagement.admin.modal.spam'),
+                                          onchange: this.spam
+                                      })}
+                              </div>,
+                              <div className="Form-group">
                                 <label>
                                   {app.translator.trans('reflar-usermanagement.admin.modal.amount_label')}
                                 </label>
@@ -163,6 +172,7 @@ export default class MemberPage extends Page {
                                   'Reflar-ageRegEnabled': this.ageRegEnabled(),
                                   'Reflar-emailRegEnabled': this.emailRegEnabled(),
                                   'Reflar-recaptcha': this.recaptcha(),
+                                  'Reflar-sfs': this.spam(),
                                   'ReFlar-amountPerPage': this.amountPerPage()
                                 }).then(() => {
                                     app.alerts.show(this.successAlert = new Alert({

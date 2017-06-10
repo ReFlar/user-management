@@ -227,6 +227,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                         this.ageRegEnabled = m.prop(settings['Reflar-ageRegEnabled'] === '1');
                         this.emailRegEnabled = m.prop(settings['Reflar-emailRegEnabled'] === '1');
                         this.recaptcha = m.prop(settings['Reflar-recaptcha'] === '1');
+                        this.spam = m.prop(settings['Reflar-sfs'] === '1');
                         this.amountPerPage = m.prop(settings['ReFlar-amountPerPage'] || 25);
                     }
                 }, {
@@ -285,6 +286,15 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                         ), m(
                             'div',
                             { className: 'Form-group' },
+                            Switch.component({
+                                className: "SettingsModal-switch",
+                                state: this.spam(),
+                                children: app.translator.trans('reflar-usermanagement.admin.modal.spam'),
+                                onchange: this.spam
+                            })
+                        ), m(
+                            'div',
+                            { className: 'Form-group' },
                             m(
                                 'label',
                                 null,
@@ -306,6 +316,7 @@ System.register('Reflar/UserManagement/components/MemberPage', ['flarum/app', 'f
                                     'Reflar-ageRegEnabled': _this2.ageRegEnabled(),
                                     'Reflar-emailRegEnabled': _this2.emailRegEnabled(),
                                     'Reflar-recaptcha': _this2.recaptcha(),
+                                    'Reflar-sfs': _this2.spam(),
                                     'ReFlar-amountPerPage': _this2.amountPerPage()
                                 }).then(function () {
                                     app.alerts.show(_this2.successAlert = new Alert({

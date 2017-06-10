@@ -32,10 +32,18 @@ class RegisterUser
     public $data;
 
     /**
+     * The IP address of the request
+     *
+     * @var string
+     */
+    public $ip;
+
+    /**
      * @param User  $actor The user performing the action.
      * @param array $data  The attributes of the new user.
+     * @param string $ip   The IP address of the request
      */
-    public function __construct(User $actor, array $data)
+    public function __construct(User $actor, array $data, $ip)
     {
         if (app()->make(SettingsRepositoryInterface::class)->get('ReFlar-recaptcha') == true) {
             app()->make(RecaptchaValidator::class)->assertValid([
@@ -44,5 +52,6 @@ class RegisterUser
         }
         $this->actor = $actor;
         $this->data = $data;
+        $this->ip = $ip;
     }
 }

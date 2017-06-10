@@ -20,6 +20,7 @@ use Flarum\Core\User;
 use Flarum\Event\UserWillBeSaved;
 use Flarum\Foundation\Application;
 use Flarum\Settings\SettingsRepositoryInterface;
+use GuzzleHttp\Client as Guzzle;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\ValidationException;
@@ -114,6 +115,23 @@ class RegisterUserHandler
 
             $password = $password ?: str_random(20);
         }
+
+        if($this->settings->get('Reflar-sfs') == true) {
+            if (isset($command->ip) && $this->isValidIpAddress($command->ip)) {
+                $ipAddress = $command->ip;
+            }
+
+            $client = new Guzzle([
+                'query' => ['ip' => $ipAddress, 'email' => $email]
+            ]);
+            $response = $client->request('GET', 'http://api.stopforumspam.org/api');
+            $body = $response->getBody()->getContents();
+
+            if (strpos($body, 'yes') !== false) {
+                die('Access Denied');
+            }
+        }
+
         $user = User::register($username, $email, $password);
         $user->age = $age;
         $user->gender = $gender;
@@ -187,5 +205,20 @@ class RegisterUserHandler
         $user->changeAvatarPath($uploadName);
 
         $mount->move('source://'.pathinfo($tmpFile, PATHINFO_BASENAME), "target://$uploadName");
+    }
+
+    /**
+     * Check that a given string is a valid IP address
+     *
+     * @param  string  $ip
+     * @return boolean
+     */
+    protected function isValidIpAddress($ip)
+    {
+        $flags = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
+        if (filter_var($ip, FILTER_VALIDATE_IP, $flags) === false) {
+            return false;
+        }
+        return true;
     }
 }

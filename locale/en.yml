@@ -23,6 +23,7 @@ reflar-usermanagement:
       age_label: Enable age registration
       amount_label: Amount of users to show on page
       recaptcha: Enable recaptcha compatibility
+      spam: Enable StopForumSpam protection
     page: 
       activate: Activate
       online_text: Online

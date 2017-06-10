@@ -40,8 +40,16 @@ class CreateUserController extends AbstractCreateController
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
+        $serverParams = $request->getServerParams();
+
+        if(isset($serverParams['HTTP_CF_CONNECTING_IP'])) {
+            $ipAddress = $serverParams['HTTP_CF_CONNECTING_IP'];
+        } else {
+            $ipAddress = $serverParams['REMOTE_ADDR'];
+        }
+
         return $this->bus->dispatch(
-            new RegisterUser($request->getAttribute('actor'), array_get($request->getParsedBody(), 'data', []))
+            new RegisterUser($request->getAttribute('actor'), array_get($request->getParsedBody(), 'data', []), $ipAddress)
         );
     }
 }
