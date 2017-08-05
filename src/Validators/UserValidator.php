@@ -62,15 +62,15 @@ class UserValidator extends AbstractValidator
 
         $this->settings = app()->make(SettingsRepositoryInterface::class);
 
-        if ($this->settings->get('ReFlar-emailRegEnabled') == false) {
+        if ($this->settings->get('Reflar-emailRegEnabled') == false) {
             $validator['email'] = ['required', 'email', 'unique:users,email'.$idSuffix];
         }
 
-        if ($this->settings->get('ReFlar-ageRegEnabled') == true) {
+        if ($this->settings->get('Reflar-ageRegEnabled') == true) {
             $validator['age'] = ['required', 'integer', 'max:100'];
         }
 
-        if ($this->settings->get('ReFlar-genderRegEnabled') == true) {
+        if ($this->settings->get('Reflar-genderRegEnabled') == true) {
             $validator['gender'] = ['required', 'string', 'in:'.$genders];
         }
 

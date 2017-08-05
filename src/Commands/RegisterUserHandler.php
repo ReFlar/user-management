@@ -105,7 +105,7 @@ class RegisterUserHandler
         $age = array_get($data, 'attributes.age');
         $gender = ucfirst(strtolower(array_get($data, 'attributes.gender')));
 
-        if ($this->settings->get('ReFlar-emailRegEnabled') == true) {
+        if ($this->settings->get('Reflar-emailRegEnabled') == true) {
             $email = $username.'@'.$username.'.com';
         }
         // If a valid authentication token was provided as an attribute,
@@ -151,7 +151,7 @@ class RegisterUserHandler
             }
         }
 
-        if ($this->settings->get('ReFlar-emailRegEnabled') == true) {
+        if ($this->settings->get('Reflar-emailRegEnabled') == true) {
             $user->activate();
         }
 

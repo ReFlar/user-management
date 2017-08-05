@@ -71,10 +71,10 @@ class AddApiAttributes
              $event->attributes['canStrike'] = $event->actor->can('strike', $event->model);
          }
          if ($event->isSerializer(ForumSerializer::class)) {
-             $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('ReFlar-emailRegEnabled');
-             $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('ReFlar-genderRegEnabled');
-             $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('ReFlar-ageRegEnabled');
-             $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('ReFlar-amountPerPage');
+             $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('Reflar-emailRegEnabled');
+             $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('Reflar-genderRegEnabled');
+             $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('Reflar-ageRegEnabled');
+             $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('Reflar-genderRegEnabled');
          }
          if ($event->isSerializer(UserSerializer::class)) {
              $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
