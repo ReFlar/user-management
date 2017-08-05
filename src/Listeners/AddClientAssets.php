@@ -14,7 +14,7 @@
 namespace Reflar\UserManagement\Listeners;
 
 use DirectoryIterator;
-use Flarum\Event\ConfigureClientView;
+use Flarum\Event\ConfigureWebApp;
 use Flarum\Event\ConfigureLocales;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -22,11 +22,11 @@ class AddClientAssets
 {
     public function subscribe(Dispatcher $events)
     {
-        $events->listen(ConfigureClientView::class, [$this, 'configureClientView']);
+        $events->listen(ConfigureWebApp::class, [$this, 'ConfigureWebApp']);
         $events->listen(ConfigureLocales::class, [$this, 'configLocales']);
     }
 
-    public function configureClientView(ConfigureClientView $event)
+    public function ConfigureWebApp(ConfigureWebApp $event)
     {
         if ($event->isAdmin()) {
             $event->addAssets([
