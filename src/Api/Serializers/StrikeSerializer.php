@@ -23,7 +23,7 @@ class StrikeSerializer extends AbstractSerializer
         return [
             'id'      => (int) $strike->id,
             'userId'  => (int) $strike->user_id,
-            'post'    => $strike->discussion_id . '/'. $strike->post_id,
+            'post'    => $strike->discussion_id.'/'.$strike->post_id,
             'reason'  => $strike->reason,
             'actor'   => $strike->actor_id,
             'content' => $strike->post_content,

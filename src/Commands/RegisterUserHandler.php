@@ -116,13 +116,13 @@ class RegisterUserHandler
             $password = $password ?: str_random(20);
         }
 
-        if($this->settings->get('Reflar-sfs') == true) {
+        if ($this->settings->get('Reflar-sfs') == true) {
             if (isset($command->ip) && $this->isValidIpAddress($command->ip)) {
                 $ipAddress = $command->ip;
             }
 
             $client = new Guzzle([
-                'query' => ['ip' => $ipAddress, 'email' => $email]
+                'query' => ['ip' => $ipAddress, 'email' => $email],
             ]);
             $response = $client->request('GET', 'http://api.stopforumspam.org/api');
             $body = $response->getBody()->getContents();
@@ -208,10 +208,11 @@ class RegisterUserHandler
     }
 
     /**
-     * Check that a given string is a valid IP address
+     * Check that a given string is a valid IP address.
      *
-     * @param  string  $ip
-     * @return boolean
+     * @param string $ip
+     *
+     * @return bool
      */
     protected function isValidIpAddress($ip)
     {
@@ -219,6 +220,7 @@ class RegisterUserHandler
         if (filter_var($ip, FILTER_VALIDATE_IP, $flags) === false) {
             return false;
         }
+
         return true;
     }
 }
