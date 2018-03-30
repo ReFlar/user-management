@@ -42,7 +42,7 @@ class CreateUserController extends AbstractCreateController
     {
         $serverParams = $request->getServerParams();
 
-        if(isset($serverParams['HTTP_CF_CONNECTING_IP'])) {
+        if (isset($serverParams['HTTP_CF_CONNECTING_IP'])) {
             $ipAddress = $serverParams['HTTP_CF_CONNECTING_IP'];
         } else {
             $ipAddress = $serverParams['REMOTE_ADDR'];
