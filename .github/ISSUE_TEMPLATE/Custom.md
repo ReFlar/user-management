@@ -1,6 +1,6 @@
 ---
-name: BUG ISSUE TEMPLATE
-about: Describe this issue template's purpose here.
+name: REPORT A BUG
+about: Report a bug using this template!
 
 ---
 
