@@ -21,7 +21,7 @@ This extension might not be compatible with other extensions that make change to
 
 **Does Not Work With:**
 
-- [Flagrow Terms](https://github.com/flagrow/terms) (should be compatible again in future version 0.2) see [ReFlar/user-management#20](https://github.com/ReFlar/user-management/issues/20) for more details
+- [Flagrow Terms](https://github.com/flagrow/terms) (should be compatible again in future version 0.2) see [ReFlar/user-management#20](https://github.com/ReFlar/user-management/issues/20) for more details.
 
 ## Goals
 
@@ -61,7 +61,7 @@ You can also post to /api/reflar/usermanagement/attributes to set a user's gende
 
 ## Issues
 
-- Incompatibility with Flagrow's Terms extension.
+- Incompatibility with [Flagrow's Terms](https://github.com/flagrow/terms) extension (should be compatible again in future version 0.2) see [ReFlar/user-management#20](https://github.com/ReFlar/user-management/issues/20) for more details.
 
 
 ## Links
