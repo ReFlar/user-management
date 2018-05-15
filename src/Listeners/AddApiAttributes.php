@@ -62,25 +62,25 @@ class AddApiAttributes
         $event->delete('/strike/{id}', 'strike', DeleteStrikeController::class);
     }
 
-     /**
-      * @param PrepareApiAttributes $event
-      */
-     public function addAttributes(PrepareApiAttributes $event)
-     {
-         if ($event->isSerializer(DiscussionSerializer::class)) {
-             $event->attributes['canStrike'] = $event->actor->can('strike', $event->model);
-         }
-         if ($event->isSerializer(ForumSerializer::class)) {
-             $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('Reflar-emailRegEnabled');
-             $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('Reflar-genderRegEnabled');
-             $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('Reflar-ageRegEnabled');
-             $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('Reflar-genderRegEnabled');
-         }
-         if ($event->isSerializer(UserSerializer::class)) {
-             $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
-             $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
-             $event->attributes['gender'] = $event->model->gender;
-             $event->attributes['age'] = $event->model->age;
-         }
-     }
+    /**
+     * @param PrepareApiAttributes $event
+     */
+    public function addAttributes(PrepareApiAttributes $event)
+    {
+        if ($event->isSerializer(DiscussionSerializer::class)) {
+            $event->attributes['canStrike'] = $event->actor->can('strike', $event->model);
+        }
+        if ($event->isSerializer(ForumSerializer::class)) {
+            $event->attributes['ReFlar-emailRegEnabled'] = $this->settings->get('Reflar-emailRegEnabled');
+            $event->attributes['ReFlar-genderRegEnabled'] = $this->settings->get('Reflar-genderRegEnabled');
+            $event->attributes['ReFlar-ageRegEnabled'] = $this->settings->get('Reflar-ageRegEnabled');
+            $event->attributes['ReFlar-amountPerPage'] = $this->settings->get('Reflar-genderRegEnabled');
+        }
+        if ($event->isSerializer(UserSerializer::class)) {
+            $event->attributes['canActivate'] = $event->actor->can('activate', $event->model);
+            $event->attributes['canViewStrike'] = $event->actor->can('strike', $event->model);
+            $event->attributes['gender'] = $event->model->gender;
+            $event->attributes['age'] = $event->model->age;
+        }
+    }
 }
