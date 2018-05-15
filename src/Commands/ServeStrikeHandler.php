@@ -96,7 +96,7 @@ class ServeStrikeHandler
                 $discussion = $this->discussions->findOrFail($post->discussion_id, $command->actor);
                 $discussion->hide_time = date('Y-m-d H:i:s');
                 $discussion->save();
-			}
+            }
         }
         $this->events->fire(
             new UserWasGivenStrike($post, $user, $command->actor, $command->reason)
