@@ -54,7 +54,7 @@ reflar-usermanagement:
         previous: "{username}'s Previous Record"
     modal:
       post:
-        title: Serve a Strike to: {username}
+        title: "Serve a Strike to: {username}"
         reason_placeholder: Reason for strike
         strike_reason: Reason
         submit_button: Serve Strike
