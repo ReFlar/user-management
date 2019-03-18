@@ -1,4 +1,5 @@
-# User Management by ReFlar [Deprecated as of Flarum Beta 8]
+# User Management by ReFlar 
+### [Deprecated as of Flarum Beta 8]
 
 [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/reflar/user-management/blob/master/LICENSE.md) [![Latest Stable Version](https://img.shields.io/packagist/v/reflar/user-management.svg)](https://packagist.org/packages/reflar/user-management) [![Total Downloads](https://img.shields.io/packagist/dt/reflar/user-management.svg)](https://packagist.org/packages/reflar/user-management)  
 
